@@ -1,0 +1,77 @@
+syntax = "proto3";
+
+package xmlservice;
+
+// Mensagem para consulta XPath
+message XPathRequest {
+  string xpath = 1;
+  optional string id_requisicao = 2;
+}
+
+message XPathResponse {
+  bool sucesso = 1;
+  repeated string resultados = 2;
+  optional string erro = 3;
+}
+
+// Mensagem para agregar ativos
+message AgregarAtivosRequest {
+  optional string tipo = 1;
+}
+
+message Ativo {
+  string ticker = 1;
+  string tipo = 2;
+  double preco_atual = 3;
+  int64 volume = 4;
+  double media_30d = 5;
+  double maximo_6m = 6;
+  optional string capital = 7;
+  optional string subregiao = 8;
+  optional string moeda = 9;
+  optional double densidade = 10;
+}
+
+message AgregarAtivosResponse {
+  bool sucesso = 1;
+  repeated Ativo ativos = 2;
+  optional string erro = 3;
+}
+
+// Mensagem para contar ativos por tipo
+message ContarAtivosPorTipoRequest {
+}
+
+message ContagemTipo {
+  string tipo = 1;
+  int64 total = 2;
+}
+
+message ContarAtivosPorTipoResponse {
+  bool sucesso = 1;
+  repeated ContagemTipo contagens = 2;
+  optional string erro = 3;
+}
+
+// Mensagem para média de preços por tipo
+message MediaPrecosPorTipoRequest {
+}
+
+message MediaPreco {
+  string tipo = 1;
+  double media_preco = 2;
+}
+
+message MediaPrecosPorTipoResponse {
+  bool sucesso = 1;
+  repeated MediaPreco medias = 2;
+  optional string erro = 3;
+}
+
+// Serviço gRPC
+service XMLService {
+  rpc ConsultarXPath (XPathRequest) returns (XPathResponse);
+  rpc AgregarAtivos (AgregarAtivosRequest) returns (AgregarAtivosResponse);
+  rpc ContarAtivosPorTipo (ContarAtivosPorTipoRequest) returns (ContarAtivosPorTipoResponse);
+  rpc MediaPrecosPorTipo (MediaPrecosPorTipoRequest) returns (MediaPrecosPorTipoResponse);
+}

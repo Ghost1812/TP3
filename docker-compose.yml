@@ -1,0 +1,133 @@
+version: '3.8'
+
+services:
+  postgres:
+    image: postgres:14
+    container_name: tp3-postgres
+    environment:
+      POSTGRES_DB: tp3_db
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./database/init.sql:/docker-entrypoint-initdb.d/init.sql
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+    networks:
+      - tp3-network
+
+  crawler:
+    build:
+      context: ./crawler
+      dockerfile: Dockerfile
+    container_name: tp3-crawler
+    environment:
+      - SUPABASE_URL=${SUPABASE_URL}
+      - SUPABASE_KEY=${SUPABASE_KEY}
+      - SUPABASE_BUCKET=${SUPABASE_BUCKET}
+    volumes:
+      - ./crawler:/app
+    networks:
+      - tp3-network
+    depends_on:
+      postgres:
+        condition: service_healthy
+    restart: unless-stopped
+    # Instalar Chrome no container
+    shm_size: '2gb'
+
+  processador:
+    build:
+      context: ./processador
+      dockerfile: Dockerfile
+    container_name: tp3-processador
+    environment:
+      - SUPABASE_URL=${SUPABASE_URL}
+      - SUPABASE_KEY=${SUPABASE_KEY}
+      - SUPABASE_BUCKET=${SUPABASE_BUCKET}
+      - XML_SERVICE_HOST=xml-service
+      - XML_SERVICE_PORT=8888
+      - WEBHOOK_URL=http://processador:5001/webhook
+      - API_EXTERNA_URL=${API_EXTERNA_URL:-https://api.exemplo.com}
+      - PYTHONUNBUFFERED=1
+    volumes:
+      - ./processador:/app
+    networks:
+      - tp3-network
+    depends_on:
+      - postgres
+      - xml-service
+    restart: unless-stopped
+
+  xml-service:
+    build:
+      context: ./xml-service
+      dockerfile: Dockerfile
+    container_name: tp3-xml-service
+    ports:
+      - "8888:8888"  # Socket
+      - "5000:5000"  # gRPC
+    environment:
+      - POSTGRES_HOST=postgres
+      - POSTGRES_PORT=5432
+      - POSTGRES_DB=tp3_db
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+      - PYTHONUNBUFFERED=1
+    volumes:
+      - ./xml-service:/app
+    networks:
+      - tp3-network
+    depends_on:
+      postgres:
+        condition: service_healthy
+    restart: unless-stopped
+
+  bi-service:
+    build:
+      context: .
+      dockerfile: ./bi-service/Dockerfile
+    container_name: tp3-bi-service
+    ports:
+      - "4000:4000"  # GraphQL
+      - "3000:3000"  # REST
+    environment:
+      - XML_SERVICE_GRPC_HOST=xml-service
+      - XML_SERVICE_GRPC_PORT=5000
+      - NODE_ENV=production
+    volumes:
+      # Apenas montar o proto, não o código fonte (já está compilado na imagem)
+      - ./xml-service/xml_service.proto:/app/proto/xml_service.proto:ro
+    networks:
+      - tp3-network
+    depends_on:
+      - xml-service
+    restart: unless-stopped
+
+  visualization:
+    build:
+      context: ./visualization
+      dockerfile: Dockerfile
+    container_name: tp3-visualization
+    ports:
+      - "8080:80"
+    environment:
+      - BI_SERVICE_URL=http://bi-service:3000
+      - GRAPHQL_URL=http://bi-service:4000/graphql
+    networks:
+      - tp3-network
+    depends_on:
+      - bi-service
+    restart: unless-stopped
+
+networks:
+  tp3-network:
+    driver: bridge
+
+volumes:
+  postgres_data:

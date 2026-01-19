@@ -1,0 +1,491 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TP3 - Visualização de Dados</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            background: #f5f6f8;
+            min-height: 100vh;
+            padding: 60px 24px;
+            color: #2c3e50;
+            line-height: 1.5;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        header {
+            margin-bottom: 48px;
+        }
+        
+        h1 {
+            font-size: 24px;
+            font-weight: 500;
+            color: #34495e;
+            margin-bottom: 4px;
+        }
+        
+        .subtitle {
+            color: #7f8c8d;
+            font-size: 14px;
+            font-weight: 400;
+        }
+        
+        .controls {
+            display: flex;
+            gap: 12px;
+            margin-bottom: 32px;
+            flex-wrap: wrap;
+            align-items: flex-end;
+        }
+        
+        .control-group {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+        
+        .control-group label {
+            font-size: 11px;
+            color: #7f8c8d;
+            font-weight: 400;
+            text-transform: none;
+            letter-spacing: 0;
+        }
+        
+        input, select {
+            padding: 8px 12px;
+            border: 1px solid #d5d9dc;
+            border-radius: 4px;
+            font-size: 14px;
+            background: white;
+            color: #2c3e50;
+            min-width: 140px;
+        }
+        
+        input:focus, select:focus {
+            outline: none;
+            border-color: #5dade2;
+            box-shadow: 0 0 0 2px rgba(93, 173, 226, 0.1);
+        }
+        
+        button {
+            padding: 8px 16px;
+            border: 1px solid #5dade2;
+            border-radius: 4px;
+            font-size: 14px;
+            font-weight: 400;
+            cursor: pointer;
+            background: #5dade2;
+            color: white;
+            transition: all 0.2s;
+        }
+        
+        button:hover {
+            background: #3498db;
+            border-color: #3498db;
+        }
+        
+        button:disabled {
+            background: #bdc3c7;
+            border-color: #bdc3c7;
+            cursor: not-allowed;
+        }
+        
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+            gap: 16px;
+            margin-bottom: 40px;
+        }
+        
+        .stat-card {
+            background: white;
+            padding: 20px;
+            border-radius: 4px;
+            border: 1px solid #e8ecef;
+            box-shadow: 0 1px 2px rgba(0,0,0,0.05);
+        }
+        
+        .stat-card.total {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+        }
+        
+        .stat-card.total h3,
+        .stat-card.total p,
+        .stat-card.total small {
+            color: white;
+        }
+        
+        .stat-card h3 {
+            font-size: 24px;
+            font-weight: 500;
+            margin-bottom: 4px;
+            color: #2c3e50;
+        }
+        
+        .stat-card p {
+            font-size: 13px;
+            color: #7f8c8d;
+            margin-bottom: 2px;
+        }
+        
+        .stat-card small {
+            font-size: 11px;
+            color: #95a5a6;
+        }
+        
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            background: white;
+            border-radius: 4px;
+            overflow: hidden;
+            box-shadow: 0 1px 2px rgba(0,0,0,0.05);
+        }
+        
+        thead {
+            background: #f8f9fa;
+            border-bottom: 1px solid #e8ecef;
+        }
+        
+        th {
+            padding: 12px;
+            text-align: left;
+            font-size: 11px;
+            font-weight: 500;
+            color: #7f8c8d;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        
+        td {
+            padding: 12px;
+            border-bottom: 1px solid #f1f3f5;
+            color: #2c3e50;
+            font-size: 14px;
+        }
+        
+        tbody tr:hover {
+            background: #f8f9fa;
+        }
+        
+        tbody tr:last-child td {
+            border-bottom: none;
+        }
+        
+        .loading {
+            text-align: center;
+            padding: 60px 20px;
+            color: #7f8c8d;
+            font-size: 14px;
+        }
+        
+        .loading::after {
+            content: '';
+            display: inline-block;
+            width: 16px;
+            height: 16px;
+            border: 2px solid #e8ecef;
+            border-top-color: #5dade2;
+            border-radius: 50%;
+            animation: spin 0.6s linear infinite;
+            margin-left: 8px;
+            vertical-align: middle;
+        }
+        
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+        
+        .error {
+            background: #fee;
+            color: #c0392b;
+            padding: 12px 16px;
+            border-radius: 4px;
+            margin-bottom: 24px;
+            font-size: 14px;
+            border-left: 3px solid #e74c3c;
+        }
+        
+        .empty-state {
+            text-align: center;
+            padding: 60px 20px;
+            color: #95a5a6;
+        }
+        
+        .empty-state p {
+            font-size: 14px;
+        }
+        
+        code {
+            font-family: 'Courier New', monospace;
+            font-size: 11px;
+            color: #7f8c8d;
+            background: #f8f9fa;
+            padding: 2px 4px;
+            border-radius: 2px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Visualização de Dados de Países</h1>
+            <p class="subtitle">Sistema de Integração - Dados do Worldometers</p>
+        </header>
+        
+        <div class="controls">
+            <div class="control-group">
+                <label>População Mínima</label>
+                <input type="number" id="minPopulacao" placeholder="1000000" value="1000000">
+            </div>
+            <div class="control-group">
+                <label>Continente</label>
+                <select id="continente">
+                    <option value="">Todos</option>
+                    <option value="Asia">Ásia</option>
+                    <option value="Africa">África</option>
+                    <option value="Europe">Europa</option>
+                    <option value="Latin America">América Latina</option>
+                    <option value="Northern America">América do Norte</option>
+                    <option value="Oceania">Oceania</option>
+                </select>
+            </div>
+            <div class="control-group">
+                <label>Limite</label>
+                <input type="number" id="limit" placeholder="50" value="50">
+            </div>
+            <button onclick="carregarDados()">Carregar Dados</button>
+            <button onclick="carregarEstatisticas()">Estatísticas</button>
+        </div>
+        
+        <div id="error" class="error" style="display: none;"></div>
+        
+        <div class="stats" id="stats"></div>
+        
+        <div id="loading" class="loading" style="display: none;">
+            Carregando
+        </div>
+        
+        <div id="tableContainer" style="display: none;">
+            <table id="dataTable">
+                <thead>
+                    <tr>
+                        <th>ID Interno</th>
+                        <th>País</th>
+                        <th>População Total</th>
+                        <th>Região</th>
+                        <th>População (Milhões)</th>
+                        <th>Capital</th>
+                        <th>Sub-região</th>
+                        <th>Moeda</th>
+                        <th>Densidade</th>
+                    </tr>
+                </thead>
+                <tbody id="tableBody">
+                </tbody>
+            </table>
+        </div>
+    </div>
+    
+    <script>
+        const BI_SERVICE_URL = 'http://localhost:3000';
+        
+        function showError(message) {
+            const errorDiv = document.getElementById('error');
+            errorDiv.textContent = message;
+            errorDiv.style.display = 'block';
+            setTimeout(() => {
+                errorDiv.style.display = 'none';
+            }, 5000);
+        }
+        
+        function showLoading(show) {
+            document.getElementById('loading').style.display = show ? 'block' : 'none';
+            document.getElementById('tableContainer').style.display = show ? 'none' : 'block';
+        }
+        
+        async function carregarDados() {
+            showLoading(true);
+            
+            try {
+                const minPop = document.getElementById('minPopulacao').value || 0;
+                const limit = document.getElementById('limit').value || 50;
+                const continente = document.getElementById('continente').value;
+                
+                let url = `${BI_SERVICE_URL}/api/ativos`;
+                if (continente) {
+                    url = `${BI_SERVICE_URL}/api/ativos?tipo=${encodeURIComponent(continente)}`;
+                }
+                
+                const response = await fetch(url);
+                
+                if (!response.ok) {
+                    throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+                }
+                
+                const data = await response.json();
+                
+                if (!data.sucesso) {
+                    throw new Error(data.erro || 'Erro ao carregar dados');
+                }
+                
+                if (!data.dados || data.dados.length === 0) {
+                    showError('Nenhum dado encontrado. Execute o crawler primeiro para gerar dados.');
+                    showLoading(false);
+                    return;
+                }
+                
+                displayData(data.dados);
+                
+            } catch (error) {
+                console.error('Erro:', error);
+                if (error.message.includes('Failed to fetch') || error.message.includes('NetworkError')) {
+                    showError('Erro de conexão com o BI Service. Verifique se o serviço está rodando em http://localhost:3000');
+                } else if (error.message.includes('Nenhum dado encontrado')) {
+                    showError('Nenhum dado encontrado. Execute o crawler primeiro para gerar dados.');
+                } else {
+                    showError('Erro ao carregar dados: ' + error.message);
+                }
+                showLoading(false);
+            }
+        }
+        
+        function displayData(dados) {
+            const tbody = document.getElementById('tableBody');
+            tbody.innerHTML = '';
+            
+            if (!dados || dados.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="9" class="empty-state"><p>Nenhum dado encontrado</p></td></tr>';
+                showLoading(false);
+                return;
+            }
+            
+            dados.forEach(item => {
+                const row = document.createElement('tr');
+                const idInterno = item.ticker || 'N/A';
+                const nomePaisMatch = idInterno.match(/CSV_([A-Z_]+)_\d+/);
+                const nomePais = nomePaisMatch ? nomePaisMatch[1].replace(/_/g, ' ') : idInterno.replace(/CSV_|_\d+/g, '').replace(/_/g, ' ');
+                const populacaoTotal = item.volume || 0;
+                const populacaoMilhoes = item.preco_atual || 0;
+                const regiao = item.tipo || 'N/A';
+                const capital = item.capital || 'N/A';
+                const subregiao = item.subregiao || 'N/A';
+                const moeda = item.moeda || 'N/A';
+                const densidade = item.densidade || 0;
+                
+                row.innerHTML = `
+                    <td><code>${idInterno}</code></td>
+                    <td>${nomePais}</td>
+                    <td>${parseInt(populacaoTotal).toLocaleString('pt-BR')} pessoas</td>
+                    <td>${regiao}</td>
+                    <td>${parseFloat(populacaoMilhoes).toFixed(2)} milhões</td>
+                    <td>${capital}</td>
+                    <td>${subregiao}</td>
+                    <td>${moeda}</td>
+                    <td>${densidade > 0 ? parseFloat(densidade).toFixed(2) + ' hab/km²' : 'N/A'}</td>
+                `;
+                tbody.appendChild(row);
+            });
+            
+            showLoading(false);
+        }
+        
+        async function carregarEstatisticas() {
+            showLoading(true);
+            
+            try {
+                const response = await fetch(`${BI_SERVICE_URL}/api/ativos/contagem-por-tipo`);
+                
+                if (!response.ok) {
+                    throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+                }
+                
+                const data = await response.json();
+                
+                if (!data.sucesso) {
+                    throw new Error(data.erro || 'Erro ao carregar estatísticas');
+                }
+                
+                if (!data.dados || data.dados.length === 0) {
+                    const statsDiv = document.getElementById('stats');
+                    statsDiv.innerHTML = '<div class="empty-state"><p>Nenhuma estatística disponível</p></div>';
+                    showLoading(false);
+                    return;
+                }
+                
+                displayStats(data.dados);
+                
+            } catch (error) {
+                console.error('Erro:', error);
+                if (error.message.includes('Failed to fetch') || error.message.includes('NetworkError')) {
+                    showError('Erro de conexão com o BI Service. Verifique se o serviço está rodando em http://localhost:3000');
+                } else {
+                    showError('Erro ao carregar estatísticas: ' + error.message);
+                }
+            } finally {
+                showLoading(false);
+            }
+        }
+        
+        function displayStats(results) {
+            const statsDiv = document.getElementById('stats');
+            statsDiv.innerHTML = '';
+            
+            if (!results || results.length === 0) {
+                statsDiv.innerHTML = '<div class="empty-state"><p>Nenhuma estatística disponível</p></div>';
+                return;
+            }
+            
+            let totalPaises = 0;
+            results.forEach(stat => {
+                totalPaises += Number(stat.total) || 0;
+            });
+            
+            if (totalPaises > 0) {
+                const totalCard = document.createElement('div');
+                totalCard.className = 'stat-card total';
+                totalCard.innerHTML = `
+                    <h3>${totalPaises.toLocaleString('pt-BR')}</h3>
+                    <p>Total de Registros</p>
+                    <small>${Math.round(totalPaises/10)} países únicos</small>
+                `;
+                statsDiv.appendChild(totalCard);
+            }
+            
+            results.forEach(stat => {
+                const card = document.createElement('div');
+                card.className = 'stat-card';
+                
+                const regiao = stat.tipo || 'Desconhecido';
+                const total = Number(stat.total) || 0;
+                
+                card.innerHTML = `
+                    <h3>${total.toLocaleString('pt-BR')}</h3>
+                    <p>${regiao}</p>
+                    <small>${Math.round(total/10)} países únicos</small>
+                `;
+                statsDiv.appendChild(card);
+            });
+        }
+        
+        window.addEventListener('load', () => {
+            carregarEstatisticas();
+        });
+    </script>
+</body>
+</html>
