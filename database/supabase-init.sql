@@ -1,4 +1,8 @@
--- Criar extensão para suporte XML
+-- Script SQL para executar no Supabase Database
+-- Acesse: Supabase Dashboard > SQL Editor > New Query
+-- Cole este script e execute
+
+-- Criar extensão para suporte XML (já disponível no Supabase)
 -- XML support is built-in, no extension needed
 
 -- Criar tabela para armazenar documentos XML
@@ -16,6 +20,9 @@ CREATE TABLE IF NOT EXISTS documentos_xml (
 CREATE INDEX IF NOT EXISTS idx_data_criacao ON documentos_xml(data_criacao);
 CREATE INDEX IF NOT EXISTS idx_id_requisicao ON documentos_xml(id_requisicao);
 CREATE INDEX IF NOT EXISTS idx_status ON documentos_xml(status);
+
+-- Criar view de compatibilidade para o nome antigo da tabela
+CREATE OR REPLACE VIEW xml_documentos AS SELECT * FROM documentos_xml;
 
 -- Criar função para consultas XPath (usada pelo XML Service)
 CREATE OR REPLACE FUNCTION consultar_xpath(
@@ -56,8 +63,8 @@ RETURNS TABLE(
 BEGIN
     RETURN QUERY
     SELECT 
-        x.nome_pais::VARCHAR as ticker,  -- Nome do país vai para ticker
-        x.regiao::VARCHAR as tipo,  -- Região vai para tipo (para filtro)
+        x.nome_pais::VARCHAR as ticker,
+        x.regiao::VARCHAR as tipo,
         CASE 
             WHEN x.populacao_milhoes IS NOT NULL AND x.populacao_milhoes != '' 
             THEN (x.populacao_milhoes::TEXT)::NUMERIC 

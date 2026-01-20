@@ -1,0 +1,2 @@
+# Nenhuma dependência necessária - usa apenas bibliotecas padrão do Python
+# Este arquivo existe apenas para satisfazer o build command do Render

@@ -16,7 +16,6 @@ app.use(express.json());
 const XML_SERVICE_GRPC_HOST = process.env.XML_SERVICE_GRPC_HOST || 'xml-service';
 const XML_SERVICE_GRPC_PORT = parseInt(process.env.XML_SERVICE_GRPC_PORT || '5000');
 const PORT_REST = parseInt(process.env.PORT_REST || '3000');
-const PORT_GRAPHQL = parseInt(process.env.PORT_GRAPHQL || '4000');
 
 // Cliente gRPC
 const xmlServiceClient = new XMLServiceClient(XML_SERVICE_GRPC_HOST, XML_SERVICE_GRPC_PORT);
@@ -30,24 +29,33 @@ app.get('/health', (req, res) => {
 app.get('/api/ativos', async (req, res) => {
   try {
     const tipo = req.query.tipo as string | undefined;
+    const limit = req.query.limit ? parseInt(req.query.limit as string) : 1000; // Limite padrão de 1000 registros
+    
     const resultado = await xmlServiceClient.agregarAtivos(tipo);
     
     if (resultado.sucesso) {
+      // Aplicar limite se necessário
+      const ativosLimitados = limit > 0 ? resultado.ativos.slice(0, limit) : resultado.ativos;
+      
       res.json({
         sucesso: true,
-        dados: resultado.ativos,
-        total: resultado.ativos.length
+        dados: ativosLimitados,
+        total: resultado.ativos.length,
+        retornados: ativosLimitados.length,
+        limite_aplicado: limit > 0 && resultado.ativos.length > limit
       });
     } else {
+      console.error('Erro ao agregar ativos:', resultado.erro);
       res.status(500).json({
         sucesso: false,
-        erro: resultado.erro
+        erro: resultado.erro || 'Erro desconhecido ao buscar dados'
       });
     }
   } catch (error: any) {
+    console.error('Erro na requisição /api/ativos:', error);
     res.status(500).json({
       sucesso: false,
-      erro: error.message
+      erro: error.message || 'Erro ao conectar com XML Service'
     });
   }
 });

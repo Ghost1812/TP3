@@ -1,0 +1,13 @@
+services:
+  - type: web
+    name: visualization
+    env: python
+    rootDir: visualization
+    buildCommand: if [ -f requirements.txt ]; then pip install -r requirements.txt; else echo "No requirements.txt found, skipping"; fi
+    startCommand: python server.py
+    envVars:
+      - key: PORT
+        value: 8080
+      - key: BI_SERVICE_URL
+        value: https://seu-bi-service-url.onrender.com
+    healthCheckPath: /

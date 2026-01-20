@@ -1,51 +1,17 @@
-version: '3.8'
+
+# Docker Compose: XML Service, BI Service e Processador
+# Crawler executa localmente
+# Visualização executa na Cloud
+# Database: Supabase Database (PostgreSQL gerenciado)
 
 services:
-  postgres:
-    image: postgres:14
-    container_name: tp3-postgres
-    environment:
-      POSTGRES_DB: tp3_db
-      POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: postgres
-    ports:
-      - "5432:5432"
-    volumes:
-      - postgres_data:/var/lib/postgresql/data
-      - ./database/init.sql:/docker-entrypoint-initdb.d/init.sql
-    healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U postgres"]
-      interval: 5s
-      timeout: 3s
-      retries: 10
-    networks:
-      - tp3-network
-
-  crawler:
-    build:
-      context: ./crawler
-      dockerfile: Dockerfile
-    container_name: tp3-crawler
-    environment:
-      - SUPABASE_URL=${SUPABASE_URL}
-      - SUPABASE_KEY=${SUPABASE_KEY}
-      - SUPABASE_BUCKET=${SUPABASE_BUCKET}
-    volumes:
-      - ./crawler:/app
-    networks:
-      - tp3-network
-    depends_on:
-      postgres:
-        condition: service_healthy
-    restart: unless-stopped
-    # Instalar Chrome no container
-    shm_size: '2gb'
-
   processador:
     build:
       context: ./processador
       dockerfile: Dockerfile
     container_name: tp3-processador
+    ports:
+      - "5001:5001"  # Flask Webhook
     environment:
       - SUPABASE_URL=${SUPABASE_URL}
       - SUPABASE_KEY=${SUPABASE_KEY}
@@ -53,14 +19,12 @@ services:
       - XML_SERVICE_HOST=xml-service
       - XML_SERVICE_PORT=8888
       - WEBHOOK_URL=http://processador:5001/webhook
-      - API_EXTERNA_URL=${API_EXTERNA_URL:-https://api.exemplo.com}
       - PYTHONUNBUFFERED=1
     volumes:
       - ./processador:/app
     networks:
       - tp3-network
     depends_on:
-      - postgres
       - xml-service
     restart: unless-stopped
 
@@ -73,19 +37,13 @@ services:
       - "8888:8888"  # Socket
       - "5000:5000"  # gRPC
     environment:
-      - POSTGRES_HOST=postgres
-      - POSTGRES_PORT=5432
-      - POSTGRES_DB=tp3_db
-      - POSTGRES_USER=postgres
-      - POSTGRES_PASSWORD=postgres
+      # Supabase Database (PostgreSQL gerenciado)
+      - SUPABASE_DB_URL=${SUPABASE_DB_URL}
       - PYTHONUNBUFFERED=1
     volumes:
       - ./xml-service:/app
     networks:
       - tp3-network
-    depends_on:
-      postgres:
-        condition: service_healthy
     restart: unless-stopped
 
   bi-service:
@@ -109,25 +67,6 @@ services:
       - xml-service
     restart: unless-stopped
 
-  visualization:
-    build:
-      context: ./visualization
-      dockerfile: Dockerfile
-    container_name: tp3-visualization
-    ports:
-      - "8080:80"
-    environment:
-      - BI_SERVICE_URL=http://bi-service:3000
-      - GRAPHQL_URL=http://bi-service:4000/graphql
-    networks:
-      - tp3-network
-    depends_on:
-      - bi-service
-    restart: unless-stopped
-
 networks:
   tp3-network:
     driver: bridge
-
-volumes:
-  postgres_data:

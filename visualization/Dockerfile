@@ -1,7 +1,12 @@
-FROM nginx:alpine
+FROM python:3.11-slim
 
-COPY index.html /usr/share/nginx/html/
+WORKDIR /app
 
-EXPOSE 80
+COPY index.html .
+COPY server.py .
 
-CMD ["nginx", "-g", "daemon off;"]
+EXPOSE 8080
+
+ENV PORT=8080
+
+CMD ["python", "server.py"]

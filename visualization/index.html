@@ -36,6 +36,13 @@
             margin-bottom: 4px;
         }
         
+        h2 {
+            font-size: 18px;
+            font-weight: 500;
+            color: #34495e;
+            margin-bottom: 16px;
+        }
+        
         .subtitle {
             color: #7f8c8d;
             font-size: 14px;
@@ -64,7 +71,7 @@
             letter-spacing: 0;
         }
         
-        input, select {
+        input, select, textarea {
             padding: 8px 12px;
             border: 1px solid #d5d9dc;
             border-radius: 4px;
@@ -74,7 +81,14 @@
             min-width: 140px;
         }
         
-        input:focus, select:focus {
+        textarea {
+            font-family: 'Courier New', monospace;
+            resize: vertical;
+            min-height: 100px;
+            width: 100%;
+        }
+        
+        input:focus, select:focus, textarea:focus {
             outline: none;
             border-color: #5dade2;
             box-shadow: 0 0 0 2px rgba(93, 173, 226, 0.1);
@@ -146,6 +160,47 @@
         .stat-card small {
             font-size: 11px;
             color: #95a5a6;
+        }
+        
+        .query-section {
+            background: white;
+            padding: 24px;
+            border-radius: 4px;
+            border: 1px solid #e8ecef;
+            box-shadow: 0 1px 2px rgba(0,0,0,0.05);
+            margin-bottom: 24px;
+        }
+        
+        .query-controls {
+            display: flex;
+            gap: 12px;
+            margin-bottom: 16px;
+            flex-wrap: wrap;
+            align-items: flex-end;
+        }
+        
+        .query-controls .control-group {
+            flex: 1;
+            min-width: 200px;
+        }
+        
+        .results-box {
+            background: #f8f9fa;
+            border: 1px solid #e8ecef;
+            border-radius: 4px;
+            padding: 16px;
+            font-family: 'Courier New', monospace;
+            font-size: 12px;
+            color: #2c3e50;
+            white-space: pre-wrap;
+            word-wrap: break-word;
+            max-height: 400px;
+            overflow-y: auto;
+            display: none;
+        }
+        
+        .results-box.has-results {
+            display: block;
         }
         
         table {
@@ -239,6 +294,20 @@
             padding: 2px 4px;
             border-radius: 2px;
         }
+        
+        .query-examples {
+            font-size: 11px;
+            color: #95a5a6;
+            margin-top: 8px;
+        }
+        
+        .query-examples code {
+            display: block;
+            margin-top: 4px;
+            padding: 4px 8px;
+            background: #f8f9fa;
+            border-radius: 2px;
+        }
     </style>
 </head>
 <body>
@@ -277,6 +346,30 @@
         
         <div class="stats" id="stats"></div>
         
+        <div class="query-section">
+            <h2>Consultas XPath e XQuery</h2>
+            <div class="query-controls">
+                <div class="control-group">
+                    <label>XPath Query</label>
+                    <textarea id="xpathQuery" placeholder="/RelatorioConformidade/Paises/Pais/@Nome"></textarea>
+                    <div class="query-examples">
+                        Exemplos:
+                        <code>/RelatorioConformidade/Paises/Pais/@Nome</code>
+                        <code>/RelatorioConformidade/Paises/Pais[@Regiao='Asia']/@Nome</code>
+                        <code>//Pais[@Populacao > 1000000000]/@Nome</code>
+                    </div>
+                </div>
+            </div>
+            <div class="query-controls">
+                <div class="control-group">
+                    <label>ID Requisição (opcional)</label>
+                    <input type="text" id="idRequisicao" placeholder="Deixe vazio para todos os documentos">
+                </div>
+                <button onclick="executarXPath()">Executar XPath</button>
+            </div>
+            <div id="xpathResults" class="results-box"></div>
+        </div>
+        
         <div id="loading" class="loading" style="display: none;">
             Carregando
         </div>
@@ -303,7 +396,8 @@
     </div>
     
     <script>
-        const BI_SERVICE_URL = 'http://localhost:3000';
+        // URL do BI Service - configurar via variável de ambiente BI_SERVICE_URL no Cloud Run
+        const BI_SERVICE_URL = '${BI_SERVICE_URL}' || 'http://localhost:3000';
         
         function showError(message) {
             const errorDiv = document.getElementById('error');
@@ -355,7 +449,7 @@
             } catch (error) {
                 console.error('Erro:', error);
                 if (error.message.includes('Failed to fetch') || error.message.includes('NetworkError')) {
-                    showError('Erro de conexão com o BI Service. Verifique se o serviço está rodando em http://localhost:3000');
+                    showError('Erro de conexão com o BI Service. Verifique se o serviço está rodando.');
                 } else if (error.message.includes('Nenhum dado encontrado')) {
                     showError('Nenhum dado encontrado. Execute o crawler primeiro para gerar dados.');
                 } else {
@@ -433,7 +527,7 @@
             } catch (error) {
                 console.error('Erro:', error);
                 if (error.message.includes('Failed to fetch') || error.message.includes('NetworkError')) {
-                    showError('Erro de conexão com o BI Service. Verifique se o serviço está rodando em http://localhost:3000');
+                    showError('Erro de conexão com o BI Service. Verifique se o serviço está rodando.');
                 } else {
                     showError('Erro ao carregar estatísticas: ' + error.message);
                 }
@@ -481,6 +575,58 @@
                 `;
                 statsDiv.appendChild(card);
             });
+        }
+        
+        async function executarXPath() {
+            const xpath = document.getElementById('xpathQuery').value.trim();
+            const idRequisicao = document.getElementById('idRequisicao').value.trim();
+            const resultsDiv = document.getElementById('xpathResults');
+            
+            if (!xpath) {
+                showError('Por favor, insira uma consulta XPath');
+                resultsDiv.classList.remove('has-results');
+                resultsDiv.textContent = '';
+                return;
+            }
+            
+            resultsDiv.classList.add('has-results');
+            resultsDiv.textContent = 'Executando consulta XPath...';
+            
+            try {
+                const response = await fetch(`${BI_SERVICE_URL}/api/xpath`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        xpath: xpath,
+                        id_requisicao: idRequisicao || undefined
+                    })
+                });
+                
+                if (!response.ok) {
+                    throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+                }
+                
+                const data = await response.json();
+                
+                if (!data.sucesso) {
+                    throw new Error(data.erro || 'Erro ao executar XPath');
+                }
+                
+                if (!data.resultados || data.resultados.length === 0) {
+                    resultsDiv.textContent = 'Nenhum resultado encontrado para esta consulta XPath.';
+                    return;
+                }
+                
+                const total = data.total || data.resultados.length;
+                resultsDiv.textContent = `Resultados encontrados: ${total}\n\n${data.resultados.join('\n')}`;
+                
+            } catch (error) {
+                console.error('Erro:', error);
+                resultsDiv.textContent = `Erro ao executar XPath: ${error.message}`;
+                showError('Erro ao executar XPath: ' + error.message);
+            }
         }
         
         window.addEventListener('load', () => {

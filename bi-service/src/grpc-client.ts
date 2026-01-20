@@ -45,9 +45,15 @@ export class XMLServiceClient {
 
   constructor(host: string, port: number) {
     const address = `${host}:${port}`;
+    // Aumentar limite de tamanho da mensagem para 30MB (padrão é 4MB)
+    const options = {
+      'grpc.max_receive_message_length': 30 * 1024 * 1024, // 30MB
+      'grpc.max_send_message_length': 30 * 1024 * 1024, // 30MB
+    };
     this.client = new xmlServiceProto.xmlservice.XMLService(
       address,
-      grpc.credentials.createInsecure()
+      grpc.credentials.createInsecure(),
+      options
     );
     console.log(`Conectado ao XML Service em ${address}`);
   }
@@ -77,7 +83,12 @@ export class XMLServiceClient {
         { tipo },
         (error: any, response: any) => {
           if (error) {
-            reject(error);
+            console.error('Erro gRPC ao agregar ativos:', error);
+            resolve({
+              sucesso: false,
+              ativos: [],
+              erro: error.message || 'Erro ao conectar com XML Service via gRPC'
+            });
           } else {
             resolve({
               sucesso: response.sucesso,
