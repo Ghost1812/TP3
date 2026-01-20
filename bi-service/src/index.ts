@@ -1,6 +1,7 @@
 /**
  * BI Service - TP3
  * Interface GraphQL/REST para consultas de dados
+ * Conecta ao XML Service via gRPC
  */
 import express from 'express';
 import { ApolloServer } from 'apollo-server-express';
@@ -17,7 +18,7 @@ const XML_SERVICE_GRPC_HOST = process.env.XML_SERVICE_GRPC_HOST || 'xml-service'
 const XML_SERVICE_GRPC_PORT = parseInt(process.env.XML_SERVICE_GRPC_PORT || '5000');
 const PORT_REST = parseInt(process.env.PORT_REST || '3000');
 
-// Cliente gRPC
+// Cliente gRPC para comunicacao com XML Service
 const xmlServiceClient = new XMLServiceClient(XML_SERVICE_GRPC_HOST, XML_SERVICE_GRPC_PORT);
 
 // Endpoints REST
@@ -29,12 +30,12 @@ app.get('/health', (req, res) => {
 app.get('/api/ativos', async (req, res) => {
   try {
     const tipo = req.query.tipo as string | undefined;
-    const limit = req.query.limit ? parseInt(req.query.limit as string) : 1000; // Limite padrão de 1000 registros
+    const limit = req.query.limit ? parseInt(req.query.limit as string) : 1000;
     
     const resultado = await xmlServiceClient.agregarAtivos(tipo);
     
     if (resultado.sucesso) {
-      // Aplicar limite se necessário
+      // Aplica limite se necessario
       const ativosLimitados = limit > 0 ? resultado.ativos.slice(0, limit) : resultado.ativos;
       
       res.json({
@@ -143,7 +144,7 @@ app.post('/api/xpath', async (req, res) => {
   }
 });
 
-// Iniciar servidor GraphQL
+// Inicia servidor GraphQL e REST
 async function startServer() {
   const apolloServer = new ApolloServer({
     typeDefs,

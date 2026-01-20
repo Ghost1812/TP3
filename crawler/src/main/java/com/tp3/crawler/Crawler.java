@@ -6,6 +6,10 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
+/**
+ * Classe principal do Crawler
+ * Executa scraping do Worldometers a cada 1 minuto e faz upload para Supabase
+ */
 public class Crawler {
     private static final ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(1);
     
@@ -53,6 +57,9 @@ public class Crawler {
         }
     }
     
+    /**
+     * Job principal: extrai dados, cria CSV e faz upload
+     */
     private static void jobGerarEEnviar() {
         List<CountryData> dados = Scraper.extrairDadosPaises();
         if (dados.isEmpty()) return;

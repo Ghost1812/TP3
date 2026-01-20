@@ -7,7 +7,9 @@ from db import persistir_xml
 from config import SOCKET_PORT
 
 def enviar_webhook(webhook_url: str, id_requisicao: str, status: str, documento_id: int):
-    """Envia webhook para Processador"""
+    """
+    Envia webhook para Processador com status da persistencia
+    """
     try:
         payload = {
             "id_requisicao": id_requisicao,
@@ -22,7 +24,10 @@ def enviar_webhook(webhook_url: str, id_requisicao: str, status: str, documento_
         return False
 
 def processar_requisicao_socket(conn: socket.socket, addr: tuple):
-    """Processa requisição recebida via Socket"""
+    """
+    Processa requisicao recebida via Socket TCP
+    Cria XML, valida e persiste no banco de dados
+    """
     try:
         print(f"\nConexao recebida de {addr}")
         
@@ -94,7 +99,10 @@ def processar_requisicao_socket(conn: socket.socket, addr: tuple):
                 pass
 
 def servidor_socket():
-    """Servidor Socket para receber dados do Processador"""
+    """
+    Servidor Socket TCP para receber dados do Processador
+    Aceita conexoes e processa em threads separadas
+    """
     sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
     sock.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
     sock.bind(('0.0.0.0', SOCKET_PORT))

@@ -1,12 +1,12 @@
 """
 XML Service - TP3
-Bootstrap: Inicia servidores Socket e gRPC
+Inicia servidores Socket e gRPC para processar e consultar XMLs
 """
 import subprocess
 import sys
 import threading
 
-# Gerar arquivos Python a partir do proto se não existirem
+# Gera arquivos Python a partir do proto se nao existirem
 try:
     import xml_service_pb2
 except ImportError:
@@ -22,7 +22,10 @@ from socket_server import servidor_socket
 from grpc_server import servidor_grpc
 
 def main():
-    """Função principal"""
+    """
+    Funcao principal
+    Inicia servidor Socket em thread separada e servidor gRPC no thread principal
+    """
     print("=" * 60)
     print("XML SERVICE - TP3")
     print("=" * 60)

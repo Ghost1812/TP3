@@ -4,7 +4,10 @@ from config import SUPABASE_URL, SUPABASE_KEY, SUPABASE_BUCKET, MAX_ARQUIVOS_BUC
 arquivos_processados = set()
 
 def monitorizar_bucket():
-    """Monitoriza bucket do Supabase por novos arquivos"""
+    """
+    Monitoriza bucket do Supabase por novos arquivos CSV
+    Retorna lista de arquivos ainda nao processados
+    """
     try:
         supabase: Client = create_client(SUPABASE_URL, SUPABASE_KEY)
         arquivos = supabase.storage.from_(SUPABASE_BUCKET).list()
@@ -24,7 +27,10 @@ def marcar_processado(nome_arquivo: str):
     arquivos_processados.add(nome_arquivo)
 
 def gerenciar_fifo():
-    """Gerencia FIFO: remove arquivo mais antigo se houver 3 ou mais"""
+    """
+    Gerencia FIFO: remove arquivo mais antigo se houver 3 ou mais
+    Mantem apenas os arquivos mais recentes no bucket
+    """
     try:
         supabase: Client = create_client(SUPABASE_URL, SUPABASE_KEY)
         arquivos = supabase.storage.from_(SUPABASE_BUCKET).list()

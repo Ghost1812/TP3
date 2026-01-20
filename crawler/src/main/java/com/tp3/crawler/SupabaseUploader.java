@@ -3,19 +3,21 @@ package com.tp3.crawler;
 import okhttp3.*;
 import com.google.gson.Gson;
 import com.google.gson.JsonArray;
-import com.google.gson.JsonObject;
 
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.List;
 
 public class SupabaseUploader {
     private static final OkHttpClient client = new OkHttpClient();
     private static final Gson gson = new Gson();
     
+    /**
+     * Faz upload do arquivo CSV para o Supabase Storage
+     * Gerencia FIFO automaticamente antes do upload
+     */
     public static boolean uploadParaSupabase(String filename) {
         try {
             if (!Config.isSupabaseUrlValid()) {
@@ -51,7 +53,7 @@ public class SupabaseUploader {
             System.out.println("Erro upload: " + e.getMessage());
             if (e.getMessage() != null && e.getMessage().contains("postgresql")) {
                 System.out.println("");
-                System.out.println("ATENÇÃO: Parece que você está usando a string de conexão PostgreSQL!");
+                System.out.println("ATENCAO: Parece que voce esta usando a string de conexao PostgreSQL!");
                 System.out.println("SUPABASE_URL deve ser a URL da API REST (ex: https://xxxxx.supabase.co)");
                 System.out.println("Encontre em: Supabase Dashboard > Settings > API > Project URL");
             }
@@ -59,10 +61,13 @@ public class SupabaseUploader {
         return false;
     }
     
+    /**
+     * Gerencia FIFO: remove arquivos antigos quando atinge o limite máximo
+     */
     private static void gerenciarFIFO() {
         try {
             List<String> csvs = listarCSVs();
-            // Remover arquivos antigos até ter espaço para novo (manter máximo 2 antes de adicionar 1 = 3 total)
+            // Remove arquivos antigos até ter espaço para novo (manter máximo 3 arquivos)
             while (csvs.size() >= Config.MAX_ARQUIVOS_BUCKET) {
                 csvs.sort(String::compareTo);
                 String arquivoAntigo = csvs.get(0);
@@ -101,6 +106,9 @@ public class SupabaseUploader {
         return new ArrayList<>();
     }
     
+    /**
+     * Remove um arquivo específico do bucket do Supabase
+     */
     private static void removerArquivo(String filename) throws IOException {
         if (!Config.isSupabaseUrlValid()) {
             return;

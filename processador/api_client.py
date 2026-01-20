@@ -5,7 +5,11 @@ from urllib.parse import quote
 cache_paises_api = {}
 
 def consultar_api_externa(pais: str) -> dict:
-    """Consulta REST Countries API para dados complementares sobre países"""
+    """
+    Consulta REST Countries API para dados complementares sobre paises
+    Retorna capital, subregiao, moeda e densidade populacional
+    Usa cache para evitar consultas repetidas
+    """
     try:
         pais_limpo = pais.strip().replace("_", " ").strip()
         pais_upper = pais_limpo.upper()

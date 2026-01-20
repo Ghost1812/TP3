@@ -7,7 +7,13 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 
+/**
+ * Utilitários para criação de arquivos CSV
+ */
 public class CSVUtils {
+    /**
+     * Cria um arquivo CSV temporário com os dados dos países
+     */
     public static String criarCSVTemporario(List<CountryData> dados) throws IOException {
         String filename = "pais_data_" + 
             LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyyMMdd_HHmmss")) + ".csv";

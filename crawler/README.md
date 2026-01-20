@@ -2,13 +2,13 @@
 
 Crawler Service em Java para fazer scraping do Worldometers e upload para Supabase Storage.
 
-## 📋 Pré-requisitos
+## Pre-requisitos
 
 - **Java 17+** instalado
 - **Maven 3.8+** instalado
 - **Chrome** instalado no sistema (para Selenium)
 
-## 🚀 Como Executar
+## Como Executar
 
 ### 1. Compilar o projeto
 
@@ -21,9 +21,9 @@ Isso criará um JAR executável em `target/crawler-1.0.0.jar`
 
 ### 2. Configurar variáveis de ambiente
 
-**⚠️ IMPORTANTE:** 
+**IMPORTANTE:** 
 - `SUPABASE_URL` deve ser a **URL da API REST** (ex: `https://xxxxx.supabase.co`)
-- **NÃO** use a string de conexão PostgreSQL (`postgresql://...`)
+- **NAO** use a string de conexao PostgreSQL (`postgresql://...`)
 - Encontre a URL correta em: **Supabase Dashboard > Settings > API > Project URL**
 
 ```bash
@@ -60,32 +60,32 @@ java -jar target/crawler-1.0.0.jar
 
 Ou usar o script `start-local.bat` que compila e executa automaticamente.
 
-## 📁 Estrutura
+## Estrutura
 
 ```
 crawler/
-├── pom.xml                                    # Configuração Maven
+├── pom.xml                                    # Configuracao Maven
 ├── src/main/java/com/tp3/crawler/
 │   ├── Crawler.java                          # Classe principal
-│   ├── Config.java                           # Configurações
+│   ├── Config.java                           # Configuracoes
 │   ├── DriverBuilder.java                    # Builder do WebDriver
 │   ├── Scraper.java                          # Scraping do Worldometers
 │   ├── CountryData.java                      # Modelo de dados
-│   ├── CSVUtils.java                         # Utilitários CSV
+│   ├── CSVUtils.java                         # Utilitarios CSV
 │   └── SupabaseUploader.java                 # Upload + FIFO
 └── target/                                    # Arquivos compilados
 ```
 
-## 🔧 Funcionalidades
+## Funcionalidades
 
-- ✅ Scraping do Worldometers usando Selenium
-- ✅ Extração de dados de países
-- ✅ Criação de arquivos CSV
-- ✅ Upload para Supabase Storage
-- ✅ Gerenciamento FIFO (máximo 3 arquivos)
-- ✅ Agendamento automático (a cada 1 minuto)
+- Scraping do Worldometers usando Selenium
+- Extracao de dados de paises
+- Criacao de arquivos CSV
+- Upload para Supabase Storage
+- Gerenciamento FIFO (maximo 3 arquivos)
+- Agendamento automatico (a cada 1 minuto)
 
-## 📝 Notas
+## Notas
 
 - O crawler executa **localmente** (não no Docker)
 - Requer Chrome instalado no sistema

@@ -5,7 +5,9 @@ app = Flask(__name__)
 
 @app.route('/cache/clear', methods=['POST'])
 def limpar_cache():
-    """Endpoint para limpar cache de países da API"""
+    """
+    Endpoint para limpar cache de paises da API REST Countries
+    """
     try:
         tamanho_antes = len(cache_paises_api)
         cache_paises_api.clear()
@@ -29,7 +31,10 @@ def estatisticas_cache():
 
 @app.route('/webhook', methods=['POST'])
 def webhook():
-    """Endpoint de webhook para receber confirmação do XML Service"""
+    """
+    Endpoint de webhook para receber confirmacao do XML Service
+    Recebe status de persistencia do XML no banco de dados
+    """
     try:
         dados = request.get_json()
         

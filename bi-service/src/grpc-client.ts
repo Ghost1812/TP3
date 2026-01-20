@@ -1,5 +1,6 @@
 /**
- * Cliente gRPC para comunicação com XML Service
+ * Cliente gRPC para comunicacao com XML Service
+ * Implementa todas as operacoes de consulta disponiveis
  */
 import * as grpc from '@grpc/grpc-js';
 import * as protoLoader from '@grpc/proto-loader';
@@ -45,7 +46,7 @@ export class XMLServiceClient {
 
   constructor(host: string, port: number) {
     const address = `${host}:${port}`;
-    // Aumentar limite de tamanho da mensagem para 30MB (padrão é 4MB)
+    // Aumenta limite de tamanho da mensagem para 30MB (padrao e 4MB)
     const options = {
       'grpc.max_receive_message_length': 30 * 1024 * 1024, // 30MB
       'grpc.max_send_message_length': 30 * 1024 * 1024, // 30MB

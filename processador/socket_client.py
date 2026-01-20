@@ -3,7 +3,10 @@ import json
 from config import XML_SERVICE_HOST, XML_SERVICE_PORT, MAPPER_VERSION, WEBHOOK_URL
 
 def enviar_para_xml_service(id_requisicao: str, mapper: dict, webhook_url: str, dados: list) -> bool:
-    """Envia dados para XML Service via Socket"""
+    """
+    Envia dados para XML Service via Socket TCP
+    Retorna True se envio foi bem-sucedido
+    """
     try:
         mensagem = {
             "id_requisicao": id_requisicao,

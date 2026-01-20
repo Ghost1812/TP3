@@ -3,6 +3,10 @@ import os
 from http.server import HTTPServer, BaseHTTPRequestHandler
 
 class CustomHandler(BaseHTTPRequestHandler):
+    """
+    Handler HTTP customizado para servir index.html
+    Substitui variaveis de ambiente no HTML antes de servir
+    """
     def end_headers(self):
         self.send_header('Access-Control-Allow-Origin', '*')
         self.send_header('Content-Type', 'text/html; charset=utf-8')
@@ -13,7 +17,7 @@ class CustomHandler(BaseHTTPRequestHandler):
             self.send_response(200)
             self.end_headers()
             
-            # Ler HTML e substituir variável de ambiente
+            # Le HTML e substitui variavel de ambiente BI_SERVICE_URL
             with open('index.html', 'r', encoding='utf-8') as f:
                 html = f.read()
             
@@ -26,6 +30,9 @@ class CustomHandler(BaseHTTPRequestHandler):
             self.end_headers()
 
 if __name__ == '__main__':
+    """
+    Inicia servidor HTTP simples para servir a visualizacao
+    """
     port = int(os.getenv('PORT', '8080'))
     server = HTTPServer(('', port), CustomHandler)
     print(f'Servidor rodando na porta {port}')

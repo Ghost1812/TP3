@@ -2,6 +2,7 @@ package com.tp3.crawler;
 
 /**
  * Configurações do Crawler Service
+ * Carrega variáveis de ambiente e valida configurações
  */
 public class Config {
     public static final String SUPABASE_URL = System.getenv("SUPABASE_URL") != null 
@@ -15,7 +16,8 @@ public class Config {
     public static final String WORLDMETERS_URL = "https://www.worldometers.info/geography/countries-of-the-world/";
     
     /**
-     * Valida se a URL do Supabase está correta (deve ser uma URL HTTP/HTTPS, não PostgreSQL)
+     * Valida se a URL do Supabase está correta
+     * Deve ser uma URL HTTP/HTTPS, não a string de conexão PostgreSQL
      */
     public static boolean isSupabaseUrlValid() {
         if (SUPABASE_URL.isEmpty()) {

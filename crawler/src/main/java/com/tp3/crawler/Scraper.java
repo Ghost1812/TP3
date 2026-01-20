@@ -14,7 +14,13 @@ import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Classe responsável pelo scraping do site Worldometers
+ */
 public class Scraper {
+    /**
+     * Extrai dados de países do Worldometers usando Selenium
+     */
     public static List<CountryData> extrairDadosPaises() {
         List<CountryData> dados = new ArrayList<>();
         WebDriver driver = null;
@@ -34,8 +40,9 @@ public class Scraper {
             Elements linhas = tabela.select("tr");
             int idx = 1;
             
+            // Processa cada linha da tabela (pula cabeçalho)
             for (Element linha : linhas) {
-                if (idx++ == 1) continue; // Pular cabeçalho
+                if (idx++ == 1) continue;
                 
                 Elements cols = linha.select("td, th");
                 if (cols.size() < 3) continue;
@@ -67,7 +74,7 @@ public class Scraper {
                         "Pessoas"
                     ));
                 } catch (Exception e) {
-                    // Ignorar linha com erro
+                    // Ignora linhas com erro de parsing
                 }
             }
         } catch (Exception e) {

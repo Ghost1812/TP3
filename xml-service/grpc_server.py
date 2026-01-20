@@ -7,10 +7,16 @@ import xml_service_pb2
 import xml_service_pb2_grpc
 
 class XMLServiceServicer(xml_service_pb2_grpc.XMLServiceServicer):
-    """Serviço gRPC para consultas do BI Service"""
+    """
+    Servico gRPC para consultas do BI Service
+    Implementa metodos para consultar XMLs usando funcoes SQL
+    """
     
     def ConsultarXPath(self, request, context):
-        """Consulta XPath no banco de dados"""
+        """
+        Consulta XPath no banco de dados
+        Usa apenas o XML mais recente
+        """
         try:
             conn = get_db_connection()
             cursor = conn.cursor(cursor_factory=RealDictCursor)
@@ -36,7 +42,10 @@ class XMLServiceServicer(xml_service_pb2_grpc.XMLServiceServicer):
             )
     
     def AgregarAtivos(self, request, context):
-        """Agrega ativos usando XMLTABLE"""
+        """
+        Agrega ativos usando XMLTABLE
+        Extrai dados de paises do XML mais recente
+        """
         try:
             conn = get_db_connection()
             cursor = conn.cursor(cursor_factory=RealDictCursor)
@@ -89,7 +98,10 @@ class XMLServiceServicer(xml_service_pb2_grpc.XMLServiceServicer):
             )
     
     def ContarAtivosPorTipo(self, request, context):
-        """Conta ativos por tipo"""
+        """
+        Conta ativos por tipo (continente)
+        Retorna contagem de paises unicos por regiao
+        """
         try:
             conn = get_db_connection()
             cursor = conn.cursor(cursor_factory=RealDictCursor)
@@ -118,7 +130,9 @@ class XMLServiceServicer(xml_service_pb2_grpc.XMLServiceServicer):
             )
     
     def MediaPrecosPorTipo(self, request, context):
-        """Calcula média de preços por tipo"""
+        """
+        Calcula media de populacao por tipo (continente)
+        """
         try:
             conn = get_db_connection()
             cursor = conn.cursor(cursor_factory=RealDictCursor)
@@ -147,7 +161,10 @@ class XMLServiceServicer(xml_service_pb2_grpc.XMLServiceServicer):
             )
 
 def servidor_grpc():
-    """Servidor gRPC para consultas do BI Service"""
+    """
+    Servidor gRPC para consultas do BI Service
+    Configura limites de tamanho de mensagem para suportar XMLs grandes
+    """
     options = [
         ('grpc.max_receive_message_length', 30 * 1024 * 1024),
         ('grpc.max_send_message_length', 30 * 1024 * 1024),

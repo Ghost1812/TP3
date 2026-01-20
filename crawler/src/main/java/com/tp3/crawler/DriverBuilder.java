@@ -5,7 +5,13 @@ import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.chrome.ChromeOptions;
 
+/**
+ * Builder para criar instâncias do WebDriver do Selenium
+ */
 public class DriverBuilder {
+    /**
+     * Cria e configura um WebDriver Chrome
+     */
     public static WebDriver buildDriver(boolean headless) {
         WebDriverManager.chromedriver().setup();
         ChromeOptions options = new ChromeOptions();

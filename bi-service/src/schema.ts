@@ -1,5 +1,6 @@
 /**
  * Schema GraphQL
+ * Define tipos e queries disponiveis na API
  */
 import { gql } from 'apollo-server-express';
 

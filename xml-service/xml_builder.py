@@ -5,7 +5,10 @@ from lxml import etree
 from lxml.etree import Element, SubElement
 
 def criar_xml(dados: List[Dict], mapper_version: str, id_requisicao: str) -> str:
-    """Cria XML a partir dos dados processados"""
+    """
+    Cria XML estruturado a partir dos dados processados
+    Retorna string XML formatada conforme schema definido
+    """
     root = Element("RelatorioConformidade")
     root.set("DataGeracao", datetime.now().strftime("%Y-%m-%d"))
     root.set("Versao", mapper_version)
@@ -60,7 +63,10 @@ def criar_xml(dados: List[Dict], mapper_version: str, id_requisicao: str) -> str
     return xml_string
 
 def validar_xml(xml_string: str):
-    """Valida XML"""
+    """
+    Valida estrutura XML usando lxml
+    Retorna tupla (valido: bool, mensagem: str)
+    """
     try:
         etree.fromstring(xml_string.encode('utf-8'))
         return True, "XML válido"

@@ -1,6 +1,6 @@
 """
 Processador Service - TP3
-Bootstrap: Inicia Flask e loop de monitoramento
+Inicia Flask e loop de monitoramento do bucket Supabase
 """
 import os
 import time
@@ -14,11 +14,14 @@ from socket_client import enviar_para_xml_service
 from webhook_server import app
 
 def processar_arquivo(nome_arquivo: str):
-    """Processa um arquivo CSV do bucket"""
+    """
+    Processa um arquivo CSV do bucket Supabase
+    Baixa, processa e envia para XML Service
+    """
     try:
         print(f"\nProcessando arquivo: {nome_arquivo}")
         
-        # Gerenciar FIFO antes de processar (garantir máximo 3 arquivos)
+        # Gerencia FIFO antes de processar (garante maximo 3 arquivos)
         gerenciar_fifo()
         
         supabase: Client = create_client(SUPABASE_URL, SUPABASE_KEY)
@@ -40,8 +43,7 @@ def processar_arquivo(nome_arquivo: str):
         
         if sucesso:
             marcar_processado(nome_arquivo)
-            
-            # Gerenciar FIFO novamente após processar (garantir máximo 3)
+            # Gerencia FIFO novamente apos processar
             gerenciar_fifo()
         else:
             print(f"Falha ao processar arquivo: {nome_arquivo}")
@@ -52,7 +54,10 @@ def processar_arquivo(nome_arquivo: str):
         traceback.print_exc()
 
 def loop_monitoramento():
-    """Loop principal de monitoramento"""
+    """
+    Loop principal de monitoramento
+    Verifica bucket a cada 10 segundos por novos arquivos CSV
+    """
     print("=" * 60)
     print("PROCESSADOR SERVICE - TP3")
     print("=" * 60)

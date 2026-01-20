@@ -7,7 +7,10 @@ from config import MAPPER
 from api_client import consultar_api_externa
 
 def processar_csv_stream(csv_bytes: bytes) -> List[Dict]:
-    """Processa CSV em stream"""
+    """
+    Processa CSV em stream e enriquece dados com API externa
+    Retorna lista de dicionarios com dados mapeados e enriquecidos
+    """
     dados_processados = []
     
     csv_io = io.TextIOWrapper(io.BytesIO(csv_bytes), encoding='utf-8-sig', newline='')
@@ -29,11 +32,10 @@ def processar_csv_stream(csv_bytes: bytes) -> List[Dict]:
             if match:
                 pais = match.group(1).replace("_", " ").strip()
         
+        # Consulta API externa para enriquecer dados (capital, moeda, densidade, etc)
         dados_api = consultar_api_externa(pais)
         
-        if len(dados_processados) < 3:
-            print(f"DEBUG - País: {pais}, API retornou: capital={dados_api.get('capital')}, subregion={dados_api.get('subregion')}, moeda={dados_api.get('currency')}, density={dados_api.get('density')}")
-        
+        # Rate limiting: pequena pausa a cada 10 registros
         if len(dados_processados) % 10 == 0:
             time.sleep(0.1)
         

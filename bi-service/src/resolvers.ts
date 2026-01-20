@@ -1,5 +1,6 @@
 /**
  * Resolvers GraphQL
+ * Implementa todas as queries disponiveis no schema
  */
 import { XMLServiceClient } from './grpc-client';
 
@@ -58,7 +59,7 @@ export const resolvers = {
       return resultado.resultados;
     },
 
-    // Aliases para compatibilidade (deprecated)
+    // Aliases para compatibilidade (deprecated - usar queries novas)
     ativos: async (_: any, args: { tipo?: string }, context: { xmlServiceClient: XMLServiceClient }) => {
       const resultado = await context.xmlServiceClient.agregarAtivos(args.tipo);
       

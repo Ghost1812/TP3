@@ -271,28 +271,28 @@
             <h2>Consultas XPath e XQuery - Exemplos Rápidos</h2>
             <div class="example-cards">
                 <div class="example-card">
-                    <h3>📋 Todos os Nomes de Países</h3>
+                    <h3>Todos os Nomes de Paises</h3>
                     <p>Lista todos os nomes de países nos documentos XML</p>
                     <code>/RelatorioConformidade/Paises/Pais/@Nome</code>
                     <button onclick="executarExemplo('/RelatorioConformidade/Paises/Pais/@Nome')">Executar</button>
                 </div>
                 
                 <div class="example-card">
-                    <h3>🌏 Países da Ásia</h3>
+                    <h3>Paises da Asia</h3>
                     <p>Lista apenas países do continente Ásia</p>
                     <code>//Pais[DadosGeograficos/Continente='Asia']/@Nome</code>
                     <button onclick="executarExemplo('//Pais[DadosGeograficos/Continente=&quot;Asia&quot;]/@Nome')">Executar</button>
                 </div>
                 
                 <div class="example-card">
-                    <h3>🌍 Países da Europa</h3>
+                    <h3>Paises da Europa</h3>
                     <p>Lista apenas países do continente Europa</p>
                     <code>//Pais[DadosGeograficos/Continente='Europe']/@Nome</code>
                     <button onclick="executarExemplo('//Pais[DadosGeograficos/Continente=&quot;Europe&quot;]/@Nome')">Executar</button>
                 </div>
                 
                 <div class="example-card">
-                    <h3>🏙️ Todas as Capitais</h3>
+                    <h3>Todas as Capitais</h3>
                     <p>Lista todas as capitais dos países</p>
                     <code>//Capital/text()</code>
                     <button onclick="executarExemplo('//Capital/text()')">Executar</button>
@@ -306,7 +306,7 @@
                 </div>
                 
                 <div class="example-card">
-                    <h3>🌎 Países da América</h3>
+                    <h3>Paises da America</h3>
                     <p>Países da América do Norte ou Latina</p>
                     <code>//Pais[DadosGeograficos/Continente='Northern America' or DadosGeograficos/Continente='Latin America']/@Nome</code>
                     <button onclick="executarExemplo('//Pais[DadosGeograficos/Continente=&quot;Northern America&quot; or DadosGeograficos/Continente=&quot;Latin America&quot;]/@Nome')">Executar</button>
@@ -320,14 +320,14 @@
                 </div>
                 
                 <div class="example-card">
-                    <h3>📊 Todos os Continentes</h3>
+                    <h3>Todos os Continentes</h3>
                     <p>Lista todos os continentes únicos</p>
                     <code>//Continente/text()</code>
                     <button onclick="executarExemplo('//Continente/text()')">Executar</button>
                 </div>
                 
                 <div class="example-card">
-                    <h3>🏛️ Capitais da Europa</h3>
+                    <h3>Capitais da Europa</h3>
                     <p>Lista capitais apenas de países europeus</p>
                     <code>//Pais[DadosGeograficos/Continente='Europe']/DadosGeograficos/Capital/text()</code>
                     <button onclick="executarExemplo('//Pais[DadosGeograficos/Continente=&quot;Europe&quot;]/DadosGeograficos/Capital/text()')">Executar</button>
@@ -360,9 +360,12 @@
     </div>
     
     <script>
-        // URL do BI Service - configurar via variável de ambiente BI_SERVICE_URL no Cloud Run
+        // URL do BI Service - configurada via variavel de ambiente BI_SERVICE_URL
         const BI_SERVICE_URL = '${BI_SERVICE_URL}' || 'http://localhost:3000';
         
+        /**
+         * Exibe mensagem de erro temporaria na interface
+         */
         function showError(message) {
             const errorDiv = document.getElementById('error');
             errorDiv.textContent = message;
@@ -372,11 +375,18 @@
             }, 5000);
         }
         
+        /**
+         * Preenche campo de XPath com exemplo e executa consulta
+         */
         function executarExemplo(xpathQuery) {
             document.getElementById('xpathQuery').value = xpathQuery;
             executarXPath();
         }
         
+        /**
+         * Executa consulta XPath via API REST
+         * Usa apenas o XML mais recente do banco de dados
+         */
         async function executarXPath() {
             const xpath = document.getElementById('xpathQuery').value.trim();
             const idRequisicao = document.getElementById('idRequisicao').value.trim();

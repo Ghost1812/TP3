@@ -51,8 +51,8 @@ def update_function():
         cursor.execute(sql_update)
         conn.commit()
         
-        print("✅ Função atualizada com sucesso!")
-        print("A função agora conta países únicos em vez de registros totais.")
+        print("Funcao atualizada com sucesso!")
+        print("A funcao agora conta paises unicos em vez de registros totais.")
         
         cursor.close()
         conn.close()
@@ -60,13 +60,13 @@ def update_function():
         return True
         
     except Exception as e:
-        print(f"❌ Erro ao atualizar função: {str(e)}")
+        print(f"ERRO ao atualizar funcao: {str(e)}")
         return False
 
 if __name__ == "__main__":
-    # Verificar se SUPABASE_DB_URL está configurado
+    # Verifica se SUPABASE_DB_URL esta configurado
     if not os.getenv("SUPABASE_DB_URL"):
-        print("❌ Erro: SUPABASE_DB_URL não está configurado!")
+        print("ERRO: SUPABASE_DB_URL nao esta configurado!")
         print("Configure a variável de ambiente SUPABASE_DB_URL antes de executar.")
         sys.exit(1)
     

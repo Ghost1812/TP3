@@ -2,18 +2,23 @@ import psycopg2
 from config import SUPABASE_DB_URL
 
 def get_db_connection():
-    """Cria conexão com Supabase Database (PostgreSQL)"""
+    """
+    Cria conexao com Supabase Database (PostgreSQL)
+    """
     if not SUPABASE_DB_URL:
         raise ValueError("SUPABASE_DB_URL deve estar configurado")
 
-    # NÃO trocar portas, NÃO adicionar pgbouncer.
-    # A tua string já tem sslmode=require, isso chega.
+    # Nao trocar portas, nao adicionar pgbouncer
+    # A string ja tem sslmode=require
     conn_string = SUPABASE_DB_URL.strip().strip('"').strip("'")
 
     return psycopg2.connect(conn_string)
 
 def persistir_xml(xml_string: str, mapper_version: str, id_requisicao: str):
-    """Persiste XML no Supabase Database"""
+    """
+    Persiste XML no banco de dados Supabase
+    Retorna tupla (sucesso: bool, documento_id: int, status: str)
+    """
     try:
         conn = get_db_connection()
         cursor = conn.cursor()

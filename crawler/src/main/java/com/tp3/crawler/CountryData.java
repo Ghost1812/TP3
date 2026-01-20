@@ -24,7 +24,7 @@ public class CountryData {
         this.moeda = moeda;
     }
     
-    // Getters
+    // Métodos getters
     public String getIdInterno() { return idInterno; }
     public String getTicker() { return ticker; }
     public String getTipoAtivo() { return tipoAtivo; }
