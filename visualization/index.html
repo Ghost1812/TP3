@@ -447,34 +447,7 @@
             <p class="subtitle">Sistema de Integração - Dados do Worldometers</p>
         </header>
         
-        <div class="controls">
-            <div class="control-group">
-                <label>População Mínima</label>
-                <input type="number" id="minPopulacao" placeholder="1000000" value="1000000">
-            </div>
-            <div class="control-group">
-                <label>Continente</label>
-                <select id="continente">
-                    <option value="">Todos</option>
-                    <option value="Asia">Ásia</option>
-                    <option value="Africa">África</option>
-                    <option value="Europe">Europa</option>
-                    <option value="Latin America">América Latina</option>
-                    <option value="Northern America">América do Norte</option>
-                    <option value="Oceania">Oceania</option>
-                </select>
-            </div>
-            <div class="control-group">
-                <label>Limite</label>
-                <input type="number" id="limit" placeholder="50" value="50">
-            </div>
-            <button onclick="carregarDados()" title="Carrega os dados detalhados dos países na tabela abaixo, aplicando os filtros de população mínima, continente e limite">Carregar Dados</button>
-            <button onclick="carregarEstatisticas()" title="Carrega e atualiza as estatísticas agregadas por continente nos cards acima">Estatísticas</button>
-        </div>
-        
         <div id="error" class="error" style="display: none;"></div>
-        
-        <div class="stats" id="stats"></div>
         
         <div class="query-section">
             <h2>Consultas XPath e XQuery - Exemplos Rápidos</h2>
@@ -566,29 +539,6 @@
             <div id="xpathResults" class="results-box"></div>
         </div>
         
-        <div id="loading" class="loading" style="display: none;">
-            Carregando
-        </div>
-        
-        <div id="tableContainer" style="display: none;">
-            <table id="dataTable">
-                <thead>
-                    <tr>
-                        <th>ID Interno</th>
-                        <th>País</th>
-                        <th>População Total</th>
-                        <th>Região</th>
-                        <th>População (Milhões)</th>
-                        <th>Capital</th>
-                        <th>Sub-região</th>
-                        <th>Moeda</th>
-                        <th>Densidade</th>
-                    </tr>
-                </thead>
-                <tbody id="tableBody">
-                </tbody>
-            </table>
-        </div>
     </div>
     
     <script>
@@ -763,8 +713,8 @@
                 totalCard.className = 'stat-card total';
                 totalCard.innerHTML = `
                     <h3>${totalPaises.toLocaleString('pt-BR')}</h3>
-                    <p>Total de Registros</p>
-                    <small>${Math.round(totalPaises/10)} países únicos</small>
+                    <p>Total de Países Únicos</p>
+                    <small>Países únicos em todos os documentos</small>
                 `;
                 statsDiv.appendChild(totalCard);
             }
@@ -779,7 +729,7 @@
                 card.innerHTML = `
                     <h3>${total.toLocaleString('pt-BR')}</h3>
                     <p>${regiao}</p>
-                    <small>${Math.round(total/10)} países únicos</small>
+                    <small>Países únicos neste continente</small>
                 `;
                 statsDiv.appendChild(card);
             });
@@ -842,9 +792,6 @@
             }
         }
         
-        window.addEventListener('load', () => {
-            carregarEstatisticas();
-        });
     </script>
 </body>
 </html>

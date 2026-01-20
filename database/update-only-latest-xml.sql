@@ -1,31 +1,7 @@
--- Script SQL para executar no Supabase Database
--- Acesse: Supabase Dashboard > SQL Editor > New Query
--- Cole este script e execute
+-- Script para atualizar as funções SQL para usar apenas o XML mais recente
+-- Execute este script no Supabase SQL Editor para aplicar as mudanças
 
--- Criar extensão para suporte XML (já disponível no Supabase)
--- XML support is built-in, no extension needed
-
--- Criar tabela para armazenar documentos XML
-CREATE TABLE IF NOT EXISTS documentos_xml (
-    id SERIAL PRIMARY KEY,
-    xml_documento XML NOT NULL,
-    data_criacao TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    mapper_version VARCHAR(50) NOT NULL,
-    id_requisicao VARCHAR(255),
-    status VARCHAR(50) DEFAULT 'OK',
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-);
-
--- Criar índices para melhor performance nas consultas XPath
-CREATE INDEX IF NOT EXISTS idx_data_criacao ON documentos_xml(data_criacao);
-CREATE INDEX IF NOT EXISTS idx_id_requisicao ON documentos_xml(id_requisicao);
-CREATE INDEX IF NOT EXISTS idx_status ON documentos_xml(status);
-
--- Criar view de compatibilidade para o nome antigo da tabela
-CREATE OR REPLACE VIEW xml_documentos AS SELECT * FROM documentos_xml;
-
--- Criar função para consultas XPath (usada pelo XML Service)
--- MODIFICADA: Agora usa apenas o XML mais recente (último documento)
+-- Atualizar função consultar_xpath para usar apenas o XML mais recente
 CREATE OR REPLACE FUNCTION consultar_xpath(
     p_xpath TEXT,
     p_id_requisicao VARCHAR DEFAULT NULL,
@@ -44,8 +20,7 @@ BEGIN
 END;
 $$ LANGUAGE plpgsql;
 
--- Criar função para agregar dados de países usando XMLTABLE
--- MODIFICADA: Agora usa apenas o XML mais recente (último documento)
+-- Atualizar função agregar_ativos para usar apenas o XML mais recente
 CREATE OR REPLACE FUNCTION agregar_ativos(
     p_tipo VARCHAR DEFAULT NULL,
     p_data_inicio TIMESTAMP DEFAULT NULL,
@@ -121,8 +96,7 @@ BEGIN
 END;
 $$ LANGUAGE plpgsql;
 
--- Criar função para contar países por região (tipo)
--- MODIFICADA: Agora conta países únicos usando COUNT(DISTINCT nome_pais) e usa apenas o XML mais recente
+-- Atualizar função contar_ativos_por_tipo para usar apenas o XML mais recente
 CREATE OR REPLACE FUNCTION contar_ativos_por_tipo(
     p_data_inicio TIMESTAMP DEFAULT NULL,
     p_data_fim TIMESTAMP DEFAULT NULL
@@ -150,8 +124,7 @@ BEGIN
 END;
 $$ LANGUAGE plpgsql;
 
--- Criar função para média de população por região (tipo)
--- MODIFICADA: Agora usa apenas o XML mais recente (último documento)
+-- Atualizar função media_precos_por_tipo para usar apenas o XML mais recente
 CREATE OR REPLACE FUNCTION media_precos_por_tipo(
     p_data_inicio TIMESTAMP DEFAULT NULL,
     p_data_fim TIMESTAMP DEFAULT NULL
