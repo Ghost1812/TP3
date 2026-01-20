@@ -1,8 +1,9 @@
 import uuid
+import os
 from datetime import datetime
 from typing import Dict, List
 from lxml import etree
-from lxml.etree import Element, SubElement
+from lxml.etree import Element, SubElement, XMLSchema
 
 def criar_xml(dados: List[Dict], mapper_version: str, id_requisicao: str) -> str:
     """
@@ -64,11 +65,30 @@ def criar_xml(dados: List[Dict], mapper_version: str, id_requisicao: str) -> str
 
 def validar_xml(xml_string: str):
     """
-    Valida estrutura XML usando lxml
+    Valida estrutura XML contra schema XSD usando lxml
     Retorna tupla (valido: bool, mensagem: str)
     """
     try:
-        etree.fromstring(xml_string.encode('utf-8'))
-        return True, "XML válido"
+        # Primeiro valida se XML esta bem-formado
+        xml_doc = etree.fromstring(xml_string.encode('utf-8'))
+        
+        # Carrega schema XSD
+        schema_path = os.path.join(os.path.dirname(__file__), 'xml_schema.xsd')
+        if os.path.exists(schema_path):
+            schema_doc = etree.parse(schema_path)
+            schema = XMLSchema(schema_doc)
+            
+            # Valida XML contra schema
+            if schema.validate(xml_doc):
+                return True, "XML válido conforme schema"
+            else:
+                erro = schema.error_log.last_error
+                return False, f"Erro de validacao contra schema: {erro.message} (linha {erro.line})"
+        else:
+            # Se schema nao existe, apenas valida sintaxe basica
+            return True, "XML bem-formado (schema XSD nao encontrado)"
+            
     except etree.XMLSyntaxError as e:
-        return False, f"Erro de validação: {str(e)}"
+        return False, f"Erro de sintaxe XML: {str(e)}"
+    except Exception as e:
+        return False, f"Erro ao validar XML: {str(e)}"

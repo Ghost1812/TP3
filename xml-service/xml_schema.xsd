@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" 
+           elementFormDefault="qualified">
+  
+  <!-- Elemento raiz -->
+  <xs:element name="RelatorioConformidade">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element name="Configuracao" type="ConfiguracaoType"/>
+        <xs:element name="Paises" type="PaisesType"/>
+      </xs:sequence>
+      <xs:attribute name="DataGeracao" type="xs:date" use="required"/>
+      <xs:attribute name="Versao" type="xs:string" use="required"/>
+    </xs:complexType>
+  </xs:element>
+  
+  <!-- Tipo Configuracao -->
+  <xs:complexType name="ConfiguracaoType">
+    <xs:attribute name="ValidadoPor" type="xs:string" use="required"/>
+    <xs:attribute name="Requisitante" type="xs:string" use="required"/>
+  </xs:complexType>
+  
+  <!-- Tipo Paises -->
+  <xs:complexType name="PaisesType">
+    <xs:sequence>
+      <xs:element name="Pais" type="PaisType" maxOccurs="unbounded"/>
+    </xs:sequence>
+  </xs:complexType>
+  
+  <!-- Tipo Pais -->
+  <xs:complexType name="PaisType">
+    <xs:sequence>
+      <xs:element name="DetalhesPais" type="DetalhesPaisType"/>
+      <xs:element name="DadosGeograficos" type="DadosGeograficosType"/>
+      <xs:element name="HistoricoAPI" type="HistoricoAPIType"/>
+    </xs:sequence>
+    <xs:attribute name="IDInterno" type="xs:string" use="required"/>
+    <xs:attribute name="Nome" type="xs:string" use="required"/>
+  </xs:complexType>
+  
+  <!-- Tipo DetalhesPais -->
+  <xs:complexType name="DetalhesPaisType">
+    <xs:sequence>
+      <xs:element name="PopulacaoMilhoes" type="xs:decimal"/>
+      <xs:element name="PopulacaoTotal" type="xs:long"/>
+    </xs:sequence>
+  </xs:complexType>
+  
+  <!-- Tipo DadosGeograficos -->
+  <xs:complexType name="DadosGeograficosType">
+    <xs:sequence>
+      <xs:element name="Continente" type="xs:string"/>
+      <xs:element name="Subregiao" type="xs:string"/>
+      <xs:element name="Capital" type="xs:string"/>
+      <xs:element name="Moeda" type="xs:string"/>
+      <xs:element name="DensidadePopulacao" type="xs:decimal"/>
+    </xs:sequence>
+  </xs:complexType>
+  
+  <!-- Tipo HistoricoAPI -->
+  <xs:complexType name="HistoricoAPIType">
+    <xs:sequence>
+      <xs:element name="Media30d" type="xs:decimal"/>
+      <xs:element name="Maximo6m" type="xs:decimal"/>
+    </xs:sequence>
+  </xs:complexType>
+  
+</xs:schema>
