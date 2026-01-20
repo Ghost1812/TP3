@@ -468,8 +468,8 @@
                 <label>Limite</label>
                 <input type="number" id="limit" placeholder="50" value="50">
             </div>
-            <button onclick="carregarDados()">Carregar Dados</button>
-            <button onclick="carregarEstatisticas()">Estatísticas</button>
+            <button onclick="carregarDados()" title="Carrega os dados detalhados dos países na tabela abaixo, aplicando os filtros de população mínima, continente e limite">Carregar Dados</button>
+            <button onclick="carregarEstatisticas()" title="Carrega e atualiza as estatísticas agregadas por continente nos cards acima">Estatísticas</button>
         </div>
         
         <div id="error" class="error" style="display: none;"></div>
@@ -533,13 +533,6 @@
                     <p>Lista todos os continentes únicos</p>
                     <code>//Continente/text()</code>
                     <button onclick="executarExemplo('//Continente/text()')">Executar</button>
-                </div>
-                
-                <div class="example-card">
-                    <h3>🔍 Países com Nome "United"</h3>
-                    <p>Países cujo nome contém a palavra "United"</p>
-                    <code>//Pais[contains(@Nome, 'United')]/@Nome</code>
-                    <button onclick="executarExemplo('//Pais[contains(@Nome, &quot;United&quot;)]/@Nome')">Executar</button>
                 </div>
                 
                 <div class="example-card">
@@ -616,6 +609,11 @@
             document.getElementById('tableContainer').style.display = show ? 'none' : 'block';
         }
         
+        /**
+         * Carrega os dados detalhados dos países e exibe na tabela
+         * Aplica os filtros: população mínima, continente e limite de registros
+         * Busca dados da API /api/ativos do BI Service
+         */
         async function carregarDados() {
             showLoading(true);
             
@@ -702,6 +700,13 @@
             showLoading(false);
         }
         
+        /**
+         * Carrega e atualiza as estatísticas agregadas por continente
+         * Mostra o total de registros (não países únicos) de cada continente
+         * Os valores podem ser grandes porque cada documento XML pode conter múltiplos países
+         * e pode haver múltiplos documentos XML (um por execução do crawler)
+         * Busca dados da API /api/ativos/contagem-por-tipo do BI Service
+         */
         async function carregarEstatisticas() {
             showLoading(true);
             
