@@ -21,17 +21,36 @@ Isso criará um JAR executável em `target/crawler-1.0.0.jar`
 
 ### 2. Configurar variáveis de ambiente
 
+**⚠️ IMPORTANTE:** 
+- `SUPABASE_URL` deve ser a **URL da API REST** (ex: `https://xxxxx.supabase.co`)
+- **NÃO** use a string de conexão PostgreSQL (`postgresql://...`)
+- Encontre a URL correta em: **Supabase Dashboard > Settings > API > Project URL**
+
 ```bash
-# Windows
+# Windows PowerShell
+$env:SUPABASE_URL = "https://seu-projeto.supabase.co"
+$env:SUPABASE_KEY = "sua-chave-anon-key"
+$env:SUPABASE_BUCKET = "tp3-data"
+
+# Windows CMD
 set SUPABASE_URL=https://seu-projeto.supabase.co
-set SUPABASE_KEY=sua-chave-supabase
+set SUPABASE_KEY=sua-chave-anon-key
 set SUPABASE_BUCKET=tp3-data
 
 # Linux/Mac
 export SUPABASE_URL=https://seu-projeto.supabase.co
-export SUPABASE_KEY=sua-chave-supabase
+export SUPABASE_KEY=sua-chave-anon-key
 export SUPABASE_BUCKET=tp3-data
 ```
+
+**Ou criar arquivo `.env` na raiz do projeto TP3:**
+```
+SUPABASE_URL=https://seu-projeto.supabase.co
+SUPABASE_KEY=sua-chave-anon-key
+SUPABASE_BUCKET=tp3-data
+```
+
+O script `start-crawler.ps1` carrega automaticamente variáveis do arquivo `.env` se existir.
 
 ### 3. Executar
 

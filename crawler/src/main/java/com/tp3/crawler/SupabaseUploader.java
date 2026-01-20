@@ -18,6 +18,11 @@ public class SupabaseUploader {
     
     public static boolean uploadParaSupabase(String filename) {
         try {
+            if (!Config.isSupabaseUrlValid()) {
+                System.out.println("Erro upload: SUPABASE_URL inválida. Deve ser uma URL HTTP/HTTPS (ex: https://xxxxx.supabase.co)");
+                return false;
+            }
+            
             gerenciarFIFO();
             
             File file = new File(filename);
@@ -35,10 +40,21 @@ public class SupabaseUploader {
                 if (response.isSuccessful()) {
                     file.delete();
                     return true;
+                } else {
+                    System.out.println("Erro upload: HTTP " + response.code() + " - " + response.message());
+                    if (response.body() != null) {
+                        System.out.println("Resposta: " + response.body().string());
+                    }
                 }
             }
         } catch (Exception e) {
             System.out.println("Erro upload: " + e.getMessage());
+            if (e.getMessage() != null && e.getMessage().contains("postgresql")) {
+                System.out.println("");
+                System.out.println("ATENÇÃO: Parece que você está usando a string de conexão PostgreSQL!");
+                System.out.println("SUPABASE_URL deve ser a URL da API REST (ex: https://xxxxx.supabase.co)");
+                System.out.println("Encontre em: Supabase Dashboard > Settings > API > Project URL");
+            }
         }
         return false;
     }
@@ -60,6 +76,10 @@ public class SupabaseUploader {
     }
     
     private static List<String> listarCSVs() throws IOException {
+        if (!Config.isSupabaseUrlValid()) {
+            return new ArrayList<>();
+        }
+        
         String url = Config.SUPABASE_URL + "/storage/v1/object/list/" + Config.SUPABASE_BUCKET;
         Request request = new Request.Builder()
             .url(url)
@@ -82,6 +102,10 @@ public class SupabaseUploader {
     }
     
     private static void removerArquivo(String filename) throws IOException {
+        if (!Config.isSupabaseUrlValid()) {
+            return;
+        }
+        
         String url = Config.SUPABASE_URL + "/storage/v1/object/" + Config.SUPABASE_BUCKET + "/" + filename;
         Request request = new Request.Builder()
             .url(url)
