@@ -13,10 +13,10 @@
         
         body {
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-            background: #f5f6f8;
+            background: linear-gradient(135deg, #1a1d29 0%, #2d3142 100%);
             min-height: 100vh;
             padding: 60px 24px;
-            color: #2c3e50;
+            color: #e8eaed;
             line-height: 1.5;
         }
         
@@ -30,21 +30,22 @@
         }
         
         h1 {
-            font-size: 24px;
-            font-weight: 500;
-            color: #34495e;
-            margin-bottom: 4px;
+            font-size: 28px;
+            font-weight: 600;
+            color: #ffffff;
+            margin-bottom: 8px;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.2);
         }
         
         h2 {
-            font-size: 18px;
-            font-weight: 500;
-            color: #34495e;
-            margin-bottom: 16px;
+            font-size: 20px;
+            font-weight: 600;
+            color: #ffffff;
+            margin-bottom: 20px;
         }
         
         .subtitle {
-            color: #7f8c8d;
+            color: #a0a4b8;
             font-size: 14px;
             font-weight: 400;
         }
@@ -65,20 +66,25 @@
         
         .control-group label {
             font-size: 11px;
-            color: #7f8c8d;
-            font-weight: 400;
-            text-transform: none;
-            letter-spacing: 0;
+            color: #b4b8c8;
+            font-weight: 500;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
         }
         
         input, select, textarea {
-            padding: 8px 12px;
-            border: 1px solid #d5d9dc;
-            border-radius: 4px;
+            padding: 10px 14px;
+            border: 1px solid #3d4153;
+            border-radius: 8px;
             font-size: 14px;
-            background: white;
-            color: #2c3e50;
+            background: #252836;
+            color: #e8eaed;
             min-width: 140px;
+            transition: all 0.2s;
+        }
+        
+        input::placeholder, textarea::placeholder {
+            color: #6b7088;
         }
         
         textarea {
@@ -86,35 +92,46 @@
             resize: vertical;
             min-height: 100px;
             width: 100%;
+            background: #1e2129;
+            border-color: #3d4153;
         }
         
         input:focus, select:focus, textarea:focus {
             outline: none;
-            border-color: #5dade2;
-            box-shadow: 0 0 0 2px rgba(93, 173, 226, 0.1);
+            border-color: #6c5ce7;
+            box-shadow: 0 0 0 3px rgba(108, 92, 231, 0.2);
+            background: #2d3142;
         }
         
         button {
-            padding: 8px 16px;
-            border: 1px solid #5dade2;
-            border-radius: 4px;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 8px;
             font-size: 14px;
-            font-weight: 400;
+            font-weight: 500;
             cursor: pointer;
-            background: #5dade2;
+            background: linear-gradient(135deg, #6c5ce7 0%, #5a4fcf 100%);
             color: white;
-            transition: all 0.2s;
+            transition: all 0.3s;
+            box-shadow: 0 4px 12px rgba(108, 92, 231, 0.3);
         }
         
         button:hover {
-            background: #3498db;
-            border-color: #3498db;
+            background: linear-gradient(135deg, #7b6ff0 0%, #6c5ce7 100%);
+            box-shadow: 0 6px 16px rgba(108, 92, 231, 0.4);
+            transform: translateY(-1px);
+        }
+        
+        button:active {
+            transform: translateY(0);
         }
         
         button:disabled {
-            background: #bdc3c7;
-            border-color: #bdc3c7;
+            background: #3d4153;
+            border-color: #3d4153;
             cursor: not-allowed;
+            box-shadow: none;
+            opacity: 0.5;
         }
         
         .stats {
@@ -125,17 +142,25 @@
         }
         
         .stat-card {
-            background: white;
-            padding: 20px;
-            border-radius: 4px;
-            border: 1px solid #e8ecef;
-            box-shadow: 0 1px 2px rgba(0,0,0,0.05);
+            background: linear-gradient(135deg, #252836 0%, #2d3142 100%);
+            padding: 24px;
+            border-radius: 12px;
+            border: 1px solid #3d4153;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+            transition: all 0.3s;
+        }
+        
+        .stat-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(0,0,0,0.4);
+            border-color: #6c5ce7;
         }
         
         .stat-card.total {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background: linear-gradient(135deg, #6c5ce7 0%, #5a4fcf 100%);
             color: white;
             border: none;
+            box-shadow: 0 6px 20px rgba(108, 92, 231, 0.4);
         }
         
         .stat-card.total h3,
@@ -145,29 +170,30 @@
         }
         
         .stat-card h3 {
-            font-size: 24px;
-            font-weight: 500;
-            margin-bottom: 4px;
-            color: #2c3e50;
+            font-size: 28px;
+            font-weight: 600;
+            margin-bottom: 6px;
+            color: #ffffff;
         }
         
         .stat-card p {
-            font-size: 13px;
-            color: #7f8c8d;
-            margin-bottom: 2px;
+            font-size: 14px;
+            color: #b4b8c8;
+            margin-bottom: 4px;
+            font-weight: 500;
         }
         
         .stat-card small {
-            font-size: 11px;
-            color: #95a5a6;
+            font-size: 12px;
+            color: #8b8fa3;
         }
         
         .query-section {
-            background: white;
-            padding: 24px;
-            border-radius: 4px;
-            border: 1px solid #e8ecef;
-            box-shadow: 0 1px 2px rgba(0,0,0,0.05);
+            background: linear-gradient(135deg, #252836 0%, #2d3142 100%);
+            padding: 28px;
+            border-radius: 12px;
+            border: 1px solid #3d4153;
+            box-shadow: 0 4px 16px rgba(0,0,0,0.3);
             margin-bottom: 24px;
         }
         
@@ -185,57 +211,81 @@
         }
         
         .results-box {
-            background: #f8f9fa;
-            border: 1px solid #e8ecef;
-            border-radius: 4px;
-            padding: 16px;
+            background: #1e2129;
+            border: 1px solid #3d4153;
+            border-radius: 8px;
+            padding: 20px;
             font-family: 'Courier New', monospace;
-            font-size: 12px;
-            color: #2c3e50;
+            font-size: 13px;
+            color: #a8d5e2;
             white-space: pre-wrap;
             word-wrap: break-word;
             max-height: 400px;
             overflow-y: auto;
             display: none;
+            box-shadow: inset 0 2px 8px rgba(0,0,0,0.3);
         }
         
         .results-box.has-results {
             display: block;
         }
         
+        .results-box::-webkit-scrollbar {
+            width: 8px;
+        }
+        
+        .results-box::-webkit-scrollbar-track {
+            background: #252836;
+            border-radius: 4px;
+        }
+        
+        .results-box::-webkit-scrollbar-thumb {
+            background: #6c5ce7;
+            border-radius: 4px;
+        }
+        
+        .results-box::-webkit-scrollbar-thumb:hover {
+            background: #7b6ff0;
+        }
+        
         table {
             width: 100%;
             border-collapse: collapse;
-            background: white;
-            border-radius: 4px;
+            background: linear-gradient(135deg, #252836 0%, #2d3142 100%);
+            border-radius: 12px;
             overflow: hidden;
-            box-shadow: 0 1px 2px rgba(0,0,0,0.05);
+            box-shadow: 0 4px 16px rgba(0,0,0,0.3);
+            border: 1px solid #3d4153;
         }
         
         thead {
-            background: #f8f9fa;
-            border-bottom: 1px solid #e8ecef;
+            background: linear-gradient(135deg, #3d4153 0%, #2d3142 100%);
+            border-bottom: 2px solid #6c5ce7;
         }
         
         th {
-            padding: 12px;
+            padding: 16px;
             text-align: left;
             font-size: 11px;
-            font-weight: 500;
-            color: #7f8c8d;
+            font-weight: 600;
+            color: #b4b8c8;
             text-transform: uppercase;
-            letter-spacing: 0.5px;
+            letter-spacing: 1px;
         }
         
         td {
-            padding: 12px;
-            border-bottom: 1px solid #f1f3f5;
-            color: #2c3e50;
+            padding: 14px 16px;
+            border-bottom: 1px solid #3d4153;
+            color: #e8eaed;
             font-size: 14px;
         }
         
+        tbody tr {
+            transition: all 0.2s;
+        }
+        
         tbody tr:hover {
-            background: #f8f9fa;
+            background: rgba(108, 92, 231, 0.1);
         }
         
         tbody tr:last-child td {
@@ -245,17 +295,17 @@
         .loading {
             text-align: center;
             padding: 60px 20px;
-            color: #7f8c8d;
+            color: #b4b8c8;
             font-size: 14px;
         }
         
         .loading::after {
             content: '';
             display: inline-block;
-            width: 16px;
-            height: 16px;
-            border: 2px solid #e8ecef;
-            border-top-color: #5dade2;
+            width: 20px;
+            height: 20px;
+            border: 3px solid #3d4153;
+            border-top-color: #6c5ce7;
             border-radius: 50%;
             animation: spin 0.6s linear infinite;
             margin-left: 8px;
@@ -267,19 +317,20 @@
         }
         
         .error {
-            background: #fee;
-            color: #c0392b;
-            padding: 12px 16px;
-            border-radius: 4px;
+            background: linear-gradient(135deg, #3d1f1f 0%, #2d1515 100%);
+            color: #ff6b6b;
+            padding: 14px 18px;
+            border-radius: 8px;
             margin-bottom: 24px;
             font-size: 14px;
-            border-left: 3px solid #e74c3c;
+            border-left: 4px solid #ff6b6b;
+            box-shadow: 0 4px 12px rgba(255, 107, 107, 0.2);
         }
         
         .empty-state {
             text-align: center;
             padding: 60px 20px;
-            color: #95a5a6;
+            color: #8b8fa3;
         }
         
         .empty-state p {
@@ -289,24 +340,103 @@
         code {
             font-family: 'Courier New', monospace;
             font-size: 11px;
-            color: #7f8c8d;
-            background: #f8f9fa;
-            padding: 2px 4px;
-            border-radius: 2px;
+            color: #a8d5e2;
+            background: #1e2129;
+            padding: 3px 6px;
+            border-radius: 4px;
+            border: 1px solid #3d4153;
+        }
+        
+        td code {
+            background: rgba(108, 92, 231, 0.15);
+            border-color: rgba(108, 92, 231, 0.3);
+            color: #b8a9ff;
         }
         
         .query-examples {
             font-size: 11px;
-            color: #95a5a6;
+            color: #8b8fa3;
             margin-top: 8px;
         }
         
         .query-examples code {
             display: block;
             margin-top: 4px;
-            padding: 4px 8px;
-            background: #f8f9fa;
-            border-radius: 2px;
+            padding: 6px 10px;
+            background: #1e2129;
+            border-radius: 4px;
+            border: 1px solid #3d4153;
+            color: #a8d5e2;
+        }
+        
+        select option {
+            background: #252836;
+            color: #e8eaed;
+        }
+        
+        .example-cards {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 16px;
+            margin-bottom: 24px;
+        }
+        
+        .example-card {
+            background: linear-gradient(135deg, #252836 0%, #2d3142 100%);
+            border: 1px solid #3d4153;
+            border-radius: 10px;
+            padding: 20px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+            transition: all 0.3s;
+        }
+        
+        .example-card:hover {
+            box-shadow: 0 6px 20px rgba(108, 92, 231, 0.3);
+            border-color: #6c5ce7;
+            transform: translateY(-2px);
+        }
+        
+        .example-card h3 {
+            font-size: 15px;
+            font-weight: 600;
+            color: #ffffff;
+            margin-bottom: 10px;
+        }
+        
+        .example-card p {
+            font-size: 12px;
+            color: #b4b8c8;
+            margin-bottom: 14px;
+            line-height: 1.5;
+        }
+        
+        .example-card button {
+            width: 100%;
+            padding: 8px 14px;
+            font-size: 12px;
+            background: linear-gradient(135deg, #6c5ce7 0%, #5a4fcf 100%);
+            border: none;
+            border-radius: 6px;
+            font-weight: 500;
+            box-shadow: 0 2px 8px rgba(108, 92, 231, 0.3);
+        }
+        
+        .example-card button:hover {
+            background: linear-gradient(135deg, #7b6ff0 0%, #6c5ce7 100%);
+            box-shadow: 0 4px 12px rgba(108, 92, 231, 0.4);
+        }
+        
+        .example-card code {
+            display: block;
+            font-size: 10px;
+            padding: 8px 10px;
+            background: #1e2129;
+            border-radius: 6px;
+            margin-bottom: 12px;
+            word-break: break-all;
+            color: #a8d5e2;
+            border: 1px solid #3d4153;
+            font-family: 'Courier New', monospace;
         }
     </style>
 </head>
@@ -347,7 +477,80 @@
         <div class="stats" id="stats"></div>
         
         <div class="query-section">
-            <h2>Consultas XPath e XQuery</h2>
+            <h2>Consultas XPath e XQuery - Exemplos Rápidos</h2>
+            <div class="example-cards">
+                <div class="example-card">
+                    <h3>📋 Todos os Nomes de Países</h3>
+                    <p>Lista todos os nomes de países nos documentos XML</p>
+                    <code>/RelatorioConformidade/Paises/Pais/@Nome</code>
+                    <button onclick="executarExemplo('/RelatorioConformidade/Paises/Pais/@Nome')">Executar</button>
+                </div>
+                
+                <div class="example-card">
+                    <h3>🌏 Países da Ásia</h3>
+                    <p>Lista apenas países do continente Ásia</p>
+                    <code>//Pais[DadosGeograficos/Continente='Asia']/@Nome</code>
+                    <button onclick="executarExemplo('//Pais[DadosGeograficos/Continente=&quot;Asia&quot;]/@Nome')">Executar</button>
+                </div>
+                
+                <div class="example-card">
+                    <h3>🌍 Países da Europa</h3>
+                    <p>Lista apenas países do continente Europa</p>
+                    <code>//Pais[DadosGeograficos/Continente='Europe']/@Nome</code>
+                    <button onclick="executarExemplo('//Pais[DadosGeograficos/Continente=&quot;Europe&quot;]/@Nome')">Executar</button>
+                </div>
+                
+                <div class="example-card">
+                    <h3>🏙️ Todas as Capitais</h3>
+                    <p>Lista todas as capitais dos países</p>
+                    <code>//Capital/text()</code>
+                    <button onclick="executarExemplo('//Capital/text()')">Executar</button>
+                </div>
+                
+                <div class="example-card">
+                    <h3>👥 Países com População &gt; 1 Bilhão</h3>
+                    <p>Países com mais de 1 bilhão de habitantes</p>
+                    <code>//Pais[number(DetalhesPais/PopulacaoTotal) > 1000000000]/@Nome</code>
+                    <button onclick="executarExemplo('//Pais[number(DetalhesPais/PopulacaoTotal) > 1000000000]/@Nome')">Executar</button>
+                </div>
+                
+                <div class="example-card">
+                    <h3>🌎 Países da América</h3>
+                    <p>Países da América do Norte ou Latina</p>
+                    <code>//Pais[DadosGeograficos/Continente='Northern America' or DadosGeograficos/Continente='Latin America']/@Nome</code>
+                    <button onclick="executarExemplo('//Pais[DadosGeograficos/Continente=&quot;Northern America&quot; or DadosGeograficos/Continente=&quot;Latin America&quot;]/@Nome')">Executar</button>
+                </div>
+                
+                <div class="example-card">
+                    <h3>💵 Países com Moeda Euro</h3>
+                    <p>Lista países que usam o Euro como moeda</p>
+                    <code>//Pais[DadosGeograficos/Moeda='Euro']/@Nome</code>
+                    <button onclick="executarExemplo('//Pais[DadosGeograficos/Moeda=&quot;Euro&quot;]/@Nome')">Executar</button>
+                </div>
+                
+                <div class="example-card">
+                    <h3>📊 Todos os Continentes</h3>
+                    <p>Lista todos os continentes únicos</p>
+                    <code>//Continente/text()</code>
+                    <button onclick="executarExemplo('//Continente/text()')">Executar</button>
+                </div>
+                
+                <div class="example-card">
+                    <h3>🔍 Países com Nome "United"</h3>
+                    <p>Países cujo nome contém a palavra "United"</p>
+                    <code>//Pais[contains(@Nome, 'United')]/@Nome</code>
+                    <button onclick="executarExemplo('//Pais[contains(@Nome, &quot;United&quot;)]/@Nome')">Executar</button>
+                </div>
+                
+                <div class="example-card">
+                    <h3>🏛️ Capitais da Europa</h3>
+                    <p>Lista capitais apenas de países europeus</p>
+                    <code>//Pais[DadosGeograficos/Continente='Europe']/DadosGeograficos/Capital/text()</code>
+                    <button onclick="executarExemplo('//Pais[DadosGeograficos/Continente=&quot;Europe&quot;]/DadosGeograficos/Capital/text()')">Executar</button>
+                </div>
+            </div>
+            
+            <h2 style="margin-top: 32px; margin-bottom: 16px;">Consulta XPath Personalizada</h2>
             <div class="query-controls">
                 <div class="control-group">
                     <label>XPath Query</label>
@@ -575,6 +778,11 @@
                 `;
                 statsDiv.appendChild(card);
             });
+        }
+        
+        function executarExemplo(xpathQuery) {
+            document.getElementById('xpathQuery').value = xpathQuery;
+            executarXPath();
         }
         
         async function executarXPath() {
