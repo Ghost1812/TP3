@@ -8,28 +8,46 @@ import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 /**
- * Utilitários para criação de arquivos CSV
+ * Classe utilitária para criação de ficheiros CSV.
  */
 public class CSVUtils {
+
     /**
-     * Cria um arquivo CSV temporário com os dados dos países
+     * Cria um ficheiro CSV temporário com os dados dos países.
      */
     public static String criarCSVTemporario(List<CountryData> dados) throws IOException {
-        String filename = "pais_data_" + 
-            LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyyMMdd_HHmmss")) + ".csv";
-        
+
+        // Gera o nome do ficheiro com data e hora
+        String filename = "pais_data_" +
+            LocalDateTime.now().format(
+                DateTimeFormatter.ofPattern("yyyyMMdd_HHmmss")
+            ) + ".csv";
+
+        // Cria e escreve o ficheiro CSV
         try (CSVWriter writer = new CSVWriter(new FileWriter(filename))) {
-            writer.writeNext(new String[]{"ID_Interno", "Ticker", "Tipo_Ativo", "Preco_Atual", 
-                "Volume_Negociado", "Data_Negociacao", "Moeda"});
-            
+
+            // Escreve o cabeçalho do CSV
+            writer.writeNext(new String[]{
+                "ID_Interno", "Nome_Pais", "Regiao",
+                "Populacao_Milhoes", "Populacao_Total",
+                "Data_Coleta", "Unidade"
+            });
+
+            // Escreve cada linha com os dados dos países
             for (CountryData d : dados) {
                 writer.writeNext(new String[]{
-                    d.getIdInterno(), d.getTicker(), d.getTipoAtivo(),
-                    String.valueOf(d.getPrecoAtual()), String.valueOf(d.getVolumeNegociado()),
-                    d.getDataNegociacao(), d.getMoeda()
+                    d.getIdInterno(),
+                    d.getNomePais(),
+                    d.getRegiao(),
+                    String.valueOf(d.getPopulacaoMilhoes()),
+                    String.valueOf(d.getPopulacaoTotal()),
+                    d.getDataColeta(),
+                    d.getUnidade()
                 });
             }
         }
+
+        // Retorna o nome do ficheiro criado
         return filename;
     }
 }

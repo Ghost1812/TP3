@@ -3,8 +3,8 @@
  * Implementa todas as operacoes de consulta disponiveis
  */
 import * as grpc from '@grpc/grpc-js';
-import * as protoLoader from '@grpc/proto-loader';
-import path from 'path';
+import protoLoader = require('@grpc/proto-loader');
+import * as path from 'path';
 
 const PROTO_PATH = path.join(__dirname, '../proto/xml_service.proto');
 
